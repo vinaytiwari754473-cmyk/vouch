@@ -220,6 +220,6 @@ Nightly: Vinay explain-back; gaps become next-morning teaching blocks; QUESTIONS
 
 No DB, no server, no auth, no deploy dependency for the demo. No `Date.now()`/`Math.random()` in
 core (inject clock/seed). No float money, no rounding helpers. No tolerance constants. No live
-model calls in demo path. No new Razorpay claims outside 00-DOMAIN.md. No touching RetryRight. No
-re-rolling frozen datasets. No "production-ready/bank-grade" language anywhere — synthetic
+model calls in demo path. No new Razorpay claims outside 00-DOMAIN.md. No re-rolling frozen
+datasets. No "production-ready/bank-grade" language anywhere — synthetic
 benchmark, labelled as such.
