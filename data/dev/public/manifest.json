@@ -1,0 +1,20 @@
+{
+  "schema_version": "vouch-public-inputs/v1",
+  "dataset_id": "vouch-dev-2026-08-v1",
+  "source": "synthetic",
+  "labels": [
+    "SYNTHETIC",
+    "DEVELOPMENT DATASET"
+  ],
+  "counts": {
+    "recon_rows": 529,
+    "settlement_groups": 24,
+    "bank_rows": 25,
+    "merchant_rows": 529
+  },
+  "sha256": {
+    "razorpay_recon_json": "1909f8f34c3117b802ae19af46dd3d78dd4d238ae08a356592b856a477bf22a5",
+    "bank_statement_csv": "ddff9319ed5ce5d72e76d5b14dcf0071ec13c24c2f691cca22f9281ea2ba200d",
+    "merchant_ledger_csv": "4e5373b83ae4aa19a1d1e67cda9d995e113a63b14596139d05ba6cc29053cb1d"
+  }
+}

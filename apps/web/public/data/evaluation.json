@@ -1,0 +1,1677 @@
+{
+  "schemaVersion": "vouch.evaluation/1",
+  "datasetId": "vouch-dev-2026-08-v1",
+  "labels": [
+    "SYNTHETIC BENCHMARK",
+    "NOT REAL MERCHANT PREVALENCE"
+  ],
+  "publicInputBundleSha256": "7070d07f2bd54f40ae377470f12005c0dc30c5d51805e6c5671144d2a2b761ad",
+  "artifacts": {
+    "baseline": "run_4c6718598ade27f29732cebd",
+    "deterministic": "run_8446f013df19add1b5865b34",
+    "hybrid": "run_ecc51b18dd36af843a2fdfd2"
+  },
+  "scores": {
+    "baseline": {
+      "datasetId": "vouch-dev-2026-08-v1",
+      "configId": "baseline",
+      "validSettlementCount": 24,
+      "manualResolutionCount": 0,
+      "automaticallyVerifiedCount": 7,
+      "correctAutomaticVerificationCount": 7,
+      "falseAutomaticVerificationCount": 0,
+      "falseAutomaticVerificationRate": {
+        "numerator": 0,
+        "denominator": 7,
+        "value": 0
+      },
+      "automaticVerificationPrecision": {
+        "numerator": 7,
+        "denominator": 7,
+        "value": 1
+      },
+      "uniqueCaseRecall": {
+        "numerator": 7,
+        "denominator": 11,
+        "value": 0.6363636363636364
+      },
+      "automaticCoverage": {
+        "numerator": 7,
+        "denominator": 24,
+        "value": 0.2916666666666667
+      },
+      "safeAbstentionPrecision": {
+        "numerator": 13,
+        "denominator": 17,
+        "value": 0.7647058823529411
+      },
+      "falseAbstentionRate": {
+        "numerator": 4,
+        "denominator": 11,
+        "value": 0.36363636363636365
+      },
+      "ambiguityPrecision": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1
+      },
+      "ambiguityRecall": {
+        "numerator": 1,
+        "denominator": 3,
+        "value": 0.3333333333333333
+      },
+      "missingBankPrecision": {
+        "numerator": 5,
+        "denominator": 16,
+        "value": 0.3125
+      },
+      "missingBankRecall": {
+        "numerator": 5,
+        "denominator": 5,
+        "value": 1
+      },
+      "falseAutomaticVerificationWilsonUpper95": 0.3543304350666874,
+      "exceptions": {
+        "truePositiveCount": 17,
+        "falsePositiveCount": 15,
+        "falseNegativeCount": 9,
+        "precision": {
+          "numerator": 17,
+          "denominator": 32,
+          "value": 0.53125
+        },
+        "recall": {
+          "numerator": 17,
+          "denominator": 26,
+          "value": 0.6538461538461539
+        },
+        "byCategory": [
+          {
+            "category": "AMBIGUOUS_CANDIDATES",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 4,
+            "precision": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 4,
+              "value": 0
+            }
+          },
+          {
+            "category": "CURRENCY_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_BANK_ENTRY",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_IMPORT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            }
+          },
+          {
+            "category": "EXCESS_CREDIT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "HYPOTHESIS_REJECTED",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          },
+          {
+            "category": "INSUFFICIENT_EVIDENCE",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          },
+          {
+            "category": "LEDGER_AMOUNT_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MALFORMED_AMOUNT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_BANK_ENTRY",
+            "truePositiveCount": 5,
+            "falsePositiveCount": 5,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 5,
+              "denominator": 10,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_MERCHANT_LEDGER_RECORD",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_RAZORPAY_ROW",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "SHORT_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            }
+          },
+          {
+            "category": "UNKNOWN_BANK_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 5,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 2,
+              "denominator": 7,
+              "value": 0.2857142857142857
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            }
+          },
+          {
+            "category": "UTR_CONFLICT",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          }
+        ]
+      },
+      "money": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "56633690",
+        "unknownBankCreditPaise": "34124130"
+      },
+      "truthMoney": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "29987086",
+        "unknownBankCreditPaise": "12319204"
+      },
+      "outcomes": [
+        {
+          "settlementId": "setl_1wgs4b1noluc6n",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_3ydj1b58mz7vv9",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_4bxxwu9cz8yto2",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_564nq77z4v27gf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_7htrgwjj4mavxy",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_8pcq8rs4ttqyjg",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_950hhkn23ad9sd",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_9dunje203qiduc",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_bju3s4t9wqnvo0",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_d97brye33w81kj",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_es8pel0wd0skhf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_hr5zo1vtwfkt8e",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_j4syifdhvpi3g3",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_owtaae3qeamunw",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_p1el56wqv61cbz",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_py9hern3hehi91",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_qttduvxn4sc67y",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_r21dl4459xjy8w",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_rzdg3rtz31xm1j",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_salrv5jz5llr7p",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_sqf4k85vkyzoqp",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_vo62x5vkn5qlsb",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_w673j8yw0nb63x",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_wzgm5yu78tjddc",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        }
+      ]
+    },
+    "deterministic": {
+      "datasetId": "vouch-dev-2026-08-v1",
+      "configId": "deterministic",
+      "validSettlementCount": 24,
+      "manualResolutionCount": 0,
+      "automaticallyVerifiedCount": 9,
+      "correctAutomaticVerificationCount": 9,
+      "falseAutomaticVerificationCount": 0,
+      "falseAutomaticVerificationRate": {
+        "numerator": 0,
+        "denominator": 9,
+        "value": 0
+      },
+      "automaticVerificationPrecision": {
+        "numerator": 9,
+        "denominator": 9,
+        "value": 1
+      },
+      "uniqueCaseRecall": {
+        "numerator": 9,
+        "denominator": 11,
+        "value": 0.8181818181818182
+      },
+      "automaticCoverage": {
+        "numerator": 9,
+        "denominator": 24,
+        "value": 0.375
+      },
+      "safeAbstentionPrecision": {
+        "numerator": 13,
+        "denominator": 15,
+        "value": 0.8666666666666667
+      },
+      "falseAbstentionRate": {
+        "numerator": 2,
+        "denominator": 11,
+        "value": 0.18181818181818182
+      },
+      "ambiguityPrecision": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1
+      },
+      "ambiguityRecall": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1
+      },
+      "missingBankPrecision": {
+        "numerator": 5,
+        "denominator": 12,
+        "value": 0.4166666666666667
+      },
+      "missingBankRecall": {
+        "numerator": 5,
+        "denominator": 5,
+        "value": 1
+      },
+      "falseAutomaticVerificationWilsonUpper95": 0.2991450484195441,
+      "exceptions": {
+        "truePositiveCount": 19,
+        "falsePositiveCount": 7,
+        "falseNegativeCount": 7,
+        "precision": {
+          "numerator": 19,
+          "denominator": 26,
+          "value": 0.7307692307692307
+        },
+        "recall": {
+          "numerator": 19,
+          "denominator": 26,
+          "value": 0.7307692307692307
+        },
+        "byCategory": [
+          {
+            "category": "AMBIGUOUS_CANDIDATES",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 2,
+            "precision": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 4,
+              "value": 0.5
+            }
+          },
+          {
+            "category": "CURRENCY_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_BANK_ENTRY",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_IMPORT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            }
+          },
+          {
+            "category": "EXCESS_CREDIT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "HYPOTHESIS_REJECTED",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          },
+          {
+            "category": "INSUFFICIENT_EVIDENCE",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          },
+          {
+            "category": "LEDGER_AMOUNT_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MALFORMED_AMOUNT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_BANK_ENTRY",
+            "truePositiveCount": 5,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 5,
+              "denominator": 6,
+              "value": 0.8333333333333334
+            },
+            "recall": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_MERCHANT_LEDGER_RECORD",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_RAZORPAY_ROW",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "SHORT_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            }
+          },
+          {
+            "category": "UNKNOWN_BANK_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            }
+          },
+          {
+            "category": "UTR_CONFLICT",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          }
+        ]
+      },
+      "money": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "35236287",
+        "unknownBankCreditPaise": "12726727"
+      },
+      "truthMoney": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "29987086",
+        "unknownBankCreditPaise": "12319204"
+      },
+      "outcomes": [
+        {
+          "settlementId": "setl_1wgs4b1noluc6n",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_3ydj1b58mz7vv9",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_4bxxwu9cz8yto2",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_564nq77z4v27gf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_7htrgwjj4mavxy",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_8pcq8rs4ttqyjg",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_950hhkn23ad9sd",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_9dunje203qiduc",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_bju3s4t9wqnvo0",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_d97brye33w81kj",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_es8pel0wd0skhf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_hr5zo1vtwfkt8e",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_j4syifdhvpi3g3",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_owtaae3qeamunw",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_p1el56wqv61cbz",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_py9hern3hehi91",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_qttduvxn4sc67y",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_r21dl4459xjy8w",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_rzdg3rtz31xm1j",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_salrv5jz5llr7p",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_sqf4k85vkyzoqp",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_vo62x5vkn5qlsb",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_w673j8yw0nb63x",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_wzgm5yu78tjddc",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        }
+      ]
+    },
+    "hybrid": {
+      "datasetId": "vouch-dev-2026-08-v1",
+      "configId": "hybrid",
+      "validSettlementCount": 24,
+      "manualResolutionCount": 0,
+      "automaticallyVerifiedCount": 10,
+      "correctAutomaticVerificationCount": 10,
+      "falseAutomaticVerificationCount": 0,
+      "falseAutomaticVerificationRate": {
+        "numerator": 0,
+        "denominator": 10,
+        "value": 0
+      },
+      "automaticVerificationPrecision": {
+        "numerator": 10,
+        "denominator": 10,
+        "value": 1
+      },
+      "uniqueCaseRecall": {
+        "numerator": 10,
+        "denominator": 11,
+        "value": 0.9090909090909091
+      },
+      "automaticCoverage": {
+        "numerator": 10,
+        "denominator": 24,
+        "value": 0.4166666666666667
+      },
+      "safeAbstentionPrecision": {
+        "numerator": 13,
+        "denominator": 14,
+        "value": 0.9285714285714286
+      },
+      "falseAbstentionRate": {
+        "numerator": 1,
+        "denominator": 11,
+        "value": 0.09090909090909091
+      },
+      "ambiguityPrecision": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1
+      },
+      "ambiguityRecall": {
+        "numerator": 3,
+        "denominator": 3,
+        "value": 1
+      },
+      "missingBankPrecision": {
+        "numerator": 5,
+        "denominator": 11,
+        "value": 0.45454545454545453
+      },
+      "missingBankRecall": {
+        "numerator": 5,
+        "denominator": 5,
+        "value": 1
+      },
+      "falseAutomaticVerificationWilsonUpper95": 0.2775327998628892,
+      "exceptions": {
+        "truePositiveCount": 20,
+        "falsePositiveCount": 5,
+        "falseNegativeCount": 6,
+        "precision": {
+          "numerator": 20,
+          "denominator": 25,
+          "value": 0.8
+        },
+        "recall": {
+          "numerator": 20,
+          "denominator": 26,
+          "value": 0.7692307692307693
+        },
+        "byCategory": [
+          {
+            "category": "AMBIGUOUS_CANDIDATES",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 2,
+            "precision": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 4,
+              "value": 0.5
+            }
+          },
+          {
+            "category": "CURRENCY_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_BANK_ENTRY",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "DUPLICATE_IMPORT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            }
+          },
+          {
+            "category": "EXCESS_CREDIT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "HYPOTHESIS_REJECTED",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "INSUFFICIENT_EVIDENCE",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 0,
+              "value": null
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          },
+          {
+            "category": "LEDGER_AMOUNT_MISMATCH",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MALFORMED_AMOUNT",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_BANK_ENTRY",
+            "truePositiveCount": 5,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 5,
+              "denominator": 5,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_MERCHANT_LEDGER_RECORD",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 2,
+              "value": 0.5
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "MISSING_RAZORPAY_ROW",
+            "truePositiveCount": 1,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 1,
+              "denominator": 1,
+              "value": 1
+            }
+          },
+          {
+            "category": "SHORT_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 0,
+            "precision": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            }
+          },
+          {
+            "category": "UNKNOWN_BANK_CREDIT",
+            "truePositiveCount": 2,
+            "falsePositiveCount": 0,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 2,
+              "denominator": 2,
+              "value": 1
+            },
+            "recall": {
+              "numerator": 2,
+              "denominator": 3,
+              "value": 0.6666666666666666
+            }
+          },
+          {
+            "category": "UTR_CONFLICT",
+            "truePositiveCount": 0,
+            "falsePositiveCount": 1,
+            "falseNegativeCount": 1,
+            "precision": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            },
+            "recall": {
+              "numerator": 0,
+              "denominator": 1,
+              "value": 0
+            }
+          }
+        ]
+      },
+      "money": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "29987086",
+        "unknownBankCreditPaise": "7477526"
+      },
+      "truthMoney": {
+        "acceptedAbsoluteResidualPaise": "0",
+        "shortCreditPaise": "51",
+        "excessCreditPaise": "75",
+        "missingSettlementPaise": "29987086",
+        "unknownBankCreditPaise": "12319204"
+      },
+      "outcomes": [
+        {
+          "settlementId": "setl_1wgs4b1noluc6n",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_3ydj1b58mz7vv9",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_4bxxwu9cz8yto2",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_564nq77z4v27gf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_7htrgwjj4mavxy",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_8pcq8rs4ttqyjg",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_950hhkn23ad9sd",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_9dunje203qiduc",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_bju3s4t9wqnvo0",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_d97brye33w81kj",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_es8pel0wd0skhf",
+          "evidenceClass": "ABSENT",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_hr5zo1vtwfkt8e",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_j4syifdhvpi3g3",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_owtaae3qeamunw",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_p1el56wqv61cbz",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_py9hern3hehi91",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "VERIFIED_ASSISTED_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_qttduvxn4sc67y",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_r21dl4459xjy8w",
+          "evidenceClass": "AMBIGUOUS",
+          "predictedStatus": "AMBIGUOUS",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_rzdg3rtz31xm1j",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_salrv5jz5llr7p",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_sqf4k85vkyzoqp",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_vo62x5vkn5qlsb",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        },
+        {
+          "settlementId": "setl_w673j8yw0nb63x",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "UNMATCHED",
+          "automatic": false,
+          "correctAutomatic": false,
+          "falseAutomatic": false,
+          "deferred": true
+        },
+        {
+          "settlementId": "setl_wzgm5yu78tjddc",
+          "evidenceClass": "UNIQUE",
+          "predictedStatus": "EXACT_MATCH",
+          "automatic": true,
+          "correctAutomatic": true,
+          "falseAutomatic": false,
+          "deferred": false
+        }
+      ]
+    }
+  },
+  "aiComparison": {
+    "eligibleSettlementCount": 1,
+    "deterministicCorrectCount": 0,
+    "hybridCorrectCount": 1,
+    "resolutionLift": {
+      "deltaCorrect": 1,
+      "denominator": 1,
+      "value": 1
+    },
+    "newFalseAutomaticVerificationCount": 0,
+    "newFalseAutomaticSettlementIds": [],
+    "removedFalseAutomaticVerificationCount": 0,
+    "netFalseAutomaticVerificationDelta": 0
+  }
+}

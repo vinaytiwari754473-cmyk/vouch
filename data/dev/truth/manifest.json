@@ -1,0 +1,942 @@
+{
+  "schema_version": "vouch-truth/v1",
+  "dataset_id": "vouch-dev-2026-08-v1",
+  "seed": "vouch-dev-seed-2026-08-25-v1",
+  "generated_at_epoch": 1785555000,
+  "rng_streams": [
+    "identifiers",
+    "money",
+    "descriptions",
+    "corruptions"
+  ],
+  "public_counts": {
+    "recon_rows": 529,
+    "settlement_groups": 24,
+    "bank_rows": 25,
+    "merchant_rows": 529
+  },
+  "settlement_truth": [
+    {
+      "settlement_id": "setl_rzdg3rtz31xm1j",
+      "settlement_utr": "HDFC291680813149624779",
+      "calculated_paise": 4814936,
+      "true_bank_row_ids": [
+        "bank_9pvhg69as526uh"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_d97brye33w81kj",
+      "settlement_utr": "HDFC975250634998341723",
+      "calculated_paise": 5570576,
+      "true_bank_row_ids": [
+        "bank_chzysdzmxehmoq"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "SHORT_CREDIT_1_PAISE"
+      ]
+    },
+    {
+      "settlement_id": "setl_hr5zo1vtwfkt8e",
+      "settlement_utr": "HDFC614064832519925621",
+      "calculated_paise": 6512159,
+      "true_bank_row_ids": [
+        "bank_iukeeq7foigsph"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "SHORT_CREDIT_50_PAISE"
+      ]
+    },
+    {
+      "settlement_id": "setl_qttduvxn4sc67y",
+      "settlement_utr": "HDFC886830838310101757",
+      "calculated_paise": 5620938,
+      "true_bank_row_ids": [
+        "bank_75egvcei6brgt0"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "PARTIAL_REFUND",
+        "CROSS_CYCLE_REFUND",
+        "EXCESS_CREDIT_75_PAISE"
+      ]
+    },
+    {
+      "settlement_id": "setl_bju3s4t9wqnvo0",
+      "settlement_utr": "HDFC510599514076005231",
+      "calculated_paise": 5821811,
+      "true_bank_row_ids": [],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "MISSING_BANK_ENTRY"
+      ]
+    },
+    {
+      "settlement_id": "setl_vo62x5vkn5qlsb",
+      "settlement_utr": "HDFC486319676723083344",
+      "calculated_paise": 5858195,
+      "true_bank_row_ids": [
+        "bank_e25ri6gonogs24"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": [
+        "CASE_SPACE_UTR_VARIANT"
+      ]
+    },
+    {
+      "settlement_id": "setl_salrv5jz5llr7p",
+      "settlement_utr": "HDFC600491747297385842",
+      "calculated_paise": 5507304,
+      "true_bank_row_ids": [
+        "bank_2aksqfmzcef5cq"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": [
+        "KNOWN_PREFIX_UTR_VARIANT"
+      ]
+    },
+    {
+      "settlement_id": "setl_py9hern3hehi91",
+      "settlement_utr": "HDFC176359370052705630",
+      "calculated_paise": 5249201,
+      "true_bank_row_ids": [
+        "bank_1v77ig6n8dfiie"
+      ],
+      "expected_deterministic_outcome": "ABSTAIN",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": [
+        "PARTIAL_REFUND",
+        "CROSS_CYCLE_REFUND",
+        "MISSING_UTR_NARRATION_EVIDENCE"
+      ]
+    },
+    {
+      "settlement_id": "setl_8pcq8rs4ttqyjg",
+      "settlement_utr": "HDFCA000001234567890",
+      "calculated_paise": 5015952,
+      "true_bank_row_ids": [
+        "bank_p304k5tsibwl7f"
+      ],
+      "expected_deterministic_outcome": "ABSTAIN",
+      "expected_hybrid_outcome": "ABSTAIN",
+      "tags": [
+        "K2_2_AMBIGUITY"
+      ]
+    },
+    {
+      "settlement_id": "setl_7htrgwjj4mavxy",
+      "settlement_utr": "HDFCB000001234567890",
+      "calculated_paise": 5015952,
+      "true_bank_row_ids": [
+        "bank_56v9o2ogeosvqh"
+      ],
+      "expected_deterministic_outcome": "ABSTAIN",
+      "expected_hybrid_outcome": "ABSTAIN",
+      "tags": [
+        "K2_2_AMBIGUITY"
+      ]
+    },
+    {
+      "settlement_id": "setl_r21dl4459xjy8w",
+      "settlement_utr": "HDFC242258303470700240",
+      "calculated_paise": 6180567,
+      "true_bank_row_ids": [
+        "bank_9kwjnexfwcobd3"
+      ],
+      "expected_deterministic_outcome": "ABSTAIN",
+      "expected_hybrid_outcome": "ABSTAIN",
+      "tags": [
+        "EXACT_UTR_DUPLICATE"
+      ]
+    },
+    {
+      "settlement_id": "setl_owtaae3qeamunw",
+      "settlement_utr": "HDFC159262974090984650",
+      "calculated_paise": 5386496,
+      "true_bank_row_ids": [
+        "bank_hcm8kdlpgld6c6"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_3ydj1b58mz7vv9",
+      "settlement_utr": "HDFC850786144329782256",
+      "calculated_paise": 5239218,
+      "true_bank_row_ids": [
+        "bank_p8r3k0dm2i4b9g"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "PARTIAL_REFUND",
+        "CROSS_CYCLE_REFUND",
+        "MISSING_MERCHANT_LEDGER_RECORD"
+      ]
+    },
+    {
+      "settlement_id": "setl_1wgs4b1noluc6n",
+      "settlement_utr": "HDFC984596035439227752",
+      "calculated_paise": 5717066,
+      "true_bank_row_ids": [
+        "bank_7xes4mbhyda1qm"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "LEDGER_AMOUNT_MISMATCH"
+      ]
+    },
+    {
+      "settlement_id": "setl_j4syifdhvpi3g3",
+      "settlement_utr": "HDFC056357835176199746",
+      "calculated_paise": 5251728,
+      "true_bank_row_ids": [
+        "bank_lm2okbvn7jlp0l"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_9dunje203qiduc",
+      "settlement_utr": "HDFC398910521620048142",
+      "calculated_paise": 6399188,
+      "true_bank_row_ids": [
+        "bank_02zhlqgusyt49t"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "CURRENCY_MISMATCH"
+      ]
+    },
+    {
+      "settlement_id": "setl_564nq77z4v27gf",
+      "settlement_utr": "HDFC041756681678642666",
+      "calculated_paise": 6233546,
+      "true_bank_row_ids": [
+        "bank_eq72v0g6m604o0"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "PARTIAL_REFUND",
+        "CROSS_CYCLE_REFUND",
+        "MALFORMED_AMOUNT"
+      ]
+    },
+    {
+      "settlement_id": "setl_950hhkn23ad9sd",
+      "settlement_utr": "HDFC863668031741739831",
+      "calculated_paise": 5956768,
+      "true_bank_row_ids": [
+        "bank_9v3yl7kps4vtm8"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": [
+        "INDIAN_COMMA_FORMAT"
+      ]
+    },
+    {
+      "settlement_id": "setl_wzgm5yu78tjddc",
+      "settlement_utr": "HDFC412565577867545185",
+      "calculated_paise": 5645323,
+      "true_bank_row_ids": [
+        "bank_5cw5bjm1em61z0"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_es8pel0wd0skhf",
+      "settlement_utr": "HDFC865740648507769086",
+      "calculated_paise": 6690863,
+      "true_bank_row_ids": [
+        "bank_y6b5ygzjo2r42z"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "OUTSIDE_POSTING_WINDOW"
+      ]
+    },
+    {
+      "settlement_id": "setl_4bxxwu9cz8yto2",
+      "settlement_utr": "HDFC545972237151049291",
+      "calculated_paise": 4841678,
+      "true_bank_row_ids": [
+        "bank_t85wu87q90rmna"
+      ],
+      "expected_deterministic_outcome": "EXCEPTION",
+      "expected_hybrid_outcome": "EXCEPTION",
+      "tags": [
+        "PARTIAL_REFUND",
+        "CROSS_CYCLE_REFUND",
+        "BANK_DIRECTION_CONFLICT"
+      ]
+    },
+    {
+      "settlement_id": "setl_w673j8yw0nb63x",
+      "settlement_utr": "HDFC467991048131552109",
+      "calculated_paise": 5924041,
+      "true_bank_row_ids": [
+        "bank_p3kmhti0ydsrlg"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_p1el56wqv61cbz",
+      "settlement_utr": "HDFC754040536133767543",
+      "calculated_paise": 5891897,
+      "true_bank_row_ids": [
+        "bank_5vapsu4trdu51q"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    },
+    {
+      "settlement_id": "setl_sqf4k85vkyzoqp",
+      "settlement_utr": "HDFC402774506858581762",
+      "calculated_paise": 5392351,
+      "true_bank_row_ids": [
+        "bank_w95pumfm75wsf2"
+      ],
+      "expected_deterministic_outcome": "AUTO_MATCH",
+      "expected_hybrid_outcome": "AUTO_MATCH",
+      "tags": []
+    }
+  ],
+  "bank_row_truth": [
+    {
+      "bank_row_id": "bank_9pvhg69as526uh",
+      "true_settlement_id": "setl_rzdg3rtz31xm1j",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 4814936,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_chzysdzmxehmoq",
+      "true_settlement_id": "setl_d97brye33w81kj",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5570576,
+      "automatic_match_allowed": false,
+      "tags": [
+        "SHORT_CREDIT_1_PAISE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_iukeeq7foigsph",
+      "true_settlement_id": "setl_hr5zo1vtwfkt8e",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 6512159,
+      "automatic_match_allowed": false,
+      "tags": [
+        "SHORT_CREDIT_50_PAISE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_75egvcei6brgt0",
+      "true_settlement_id": "setl_qttduvxn4sc67y",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5620938,
+      "automatic_match_allowed": false,
+      "tags": [
+        "EXCESS_CREDIT_75_PAISE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_e25ri6gonogs24",
+      "true_settlement_id": "setl_vo62x5vkn5qlsb",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5858195,
+      "automatic_match_allowed": true,
+      "tags": [
+        "CASE_SPACE_UTR_VARIANT"
+      ]
+    },
+    {
+      "bank_row_id": "bank_2aksqfmzcef5cq",
+      "true_settlement_id": "setl_salrv5jz5llr7p",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5507304,
+      "automatic_match_allowed": true,
+      "tags": [
+        "KNOWN_PREFIX_UTR_VARIANT"
+      ]
+    },
+    {
+      "bank_row_id": "bank_1v77ig6n8dfiie",
+      "true_settlement_id": "setl_py9hern3hehi91",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5249201,
+      "automatic_match_allowed": true,
+      "tags": [
+        "MISSING_UTR_NARRATION_EVIDENCE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_p304k5tsibwl7f",
+      "true_settlement_id": "setl_8pcq8rs4ttqyjg",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5015952,
+      "automatic_match_allowed": false,
+      "tags": [
+        "K2_2_AMBIGUITY"
+      ]
+    },
+    {
+      "bank_row_id": "bank_56v9o2ogeosvqh",
+      "true_settlement_id": "setl_7htrgwjj4mavxy",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5015952,
+      "automatic_match_allowed": false,
+      "tags": [
+        "K2_2_AMBIGUITY"
+      ]
+    },
+    {
+      "bank_row_id": "bank_9kwjnexfwcobd3",
+      "true_settlement_id": "setl_r21dl4459xjy8w",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 6180567,
+      "automatic_match_allowed": false,
+      "tags": [
+        "EXACT_UTR_DUPLICATE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_hcm8kdlpgld6c6",
+      "true_settlement_id": "setl_owtaae3qeamunw",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5386496,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_p8r3k0dm2i4b9g",
+      "true_settlement_id": "setl_3ydj1b58mz7vv9",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5239218,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_7xes4mbhyda1qm",
+      "true_settlement_id": "setl_1wgs4b1noluc6n",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5717066,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_lm2okbvn7jlp0l",
+      "true_settlement_id": "setl_j4syifdhvpi3g3",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5251728,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_02zhlqgusyt49t",
+      "true_settlement_id": "setl_9dunje203qiduc",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 6399188,
+      "automatic_match_allowed": false,
+      "tags": [
+        "CURRENCY_MISMATCH"
+      ]
+    },
+    {
+      "bank_row_id": "bank_eq72v0g6m604o0",
+      "true_settlement_id": "setl_564nq77z4v27gf",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 6233546,
+      "automatic_match_allowed": false,
+      "tags": [
+        "MALFORMED_AMOUNT"
+      ]
+    },
+    {
+      "bank_row_id": "bank_9v3yl7kps4vtm8",
+      "true_settlement_id": "setl_950hhkn23ad9sd",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5956768,
+      "automatic_match_allowed": true,
+      "tags": [
+        "INDIAN_COMMA_FORMAT"
+      ]
+    },
+    {
+      "bank_row_id": "bank_5cw5bjm1em61z0",
+      "true_settlement_id": "setl_wzgm5yu78tjddc",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5645323,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_y6b5ygzjo2r42z",
+      "true_settlement_id": "setl_es8pel0wd0skhf",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 6690863,
+      "automatic_match_allowed": false,
+      "tags": [
+        "OUTSIDE_POSTING_WINDOW"
+      ]
+    },
+    {
+      "bank_row_id": "bank_t85wu87q90rmna",
+      "true_settlement_id": "setl_4bxxwu9cz8yto2",
+      "role": "CORRUPTED_SETTLEMENT_CREDIT",
+      "expected_amount_paise": 4841678,
+      "automatic_match_allowed": false,
+      "tags": [
+        "BANK_DIRECTION_CONFLICT"
+      ]
+    },
+    {
+      "bank_row_id": "bank_p3kmhti0ydsrlg",
+      "true_settlement_id": "setl_w673j8yw0nb63x",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5924041,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_5vapsu4trdu51q",
+      "true_settlement_id": "setl_p1el56wqv61cbz",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5891897,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_w95pumfm75wsf2",
+      "true_settlement_id": "setl_sqf4k85vkyzoqp",
+      "role": "SETTLEMENT_CREDIT",
+      "expected_amount_paise": 5392351,
+      "automatic_match_allowed": true,
+      "tags": []
+    },
+    {
+      "bank_row_id": "bank_c52s52t5kv5mot",
+      "true_settlement_id": "setl_r21dl4459xjy8w",
+      "role": "DUPLICATE",
+      "expected_amount_paise": 6180567,
+      "automatic_match_allowed": false,
+      "tags": [
+        "EXACT_UTR_DUPLICATE"
+      ]
+    },
+    {
+      "bank_row_id": "bank_pusxvnnwsq03k5",
+      "true_settlement_id": null,
+      "role": "UNKNOWN",
+      "expected_amount_paise": 786663,
+      "automatic_match_allowed": false,
+      "tags": [
+        "PROMPT_INJECTION_NARRATION",
+        "UNKNOWN_BANK_CREDIT"
+      ]
+    }
+  ],
+  "expected_exceptions": [
+    {
+      "case_id": "case_001",
+      "type": "SHORT_CREDIT",
+      "impact_paise": -1,
+      "settlement_ids": [
+        "setl_d97brye33w81kj"
+      ],
+      "bank_row_ids": [
+        "bank_chzysdzmxehmoq"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Bank credit is exactly one paise below the recon group sum."
+    },
+    {
+      "case_id": "case_002",
+      "type": "SHORT_CREDIT",
+      "impact_paise": -50,
+      "settlement_ids": [
+        "setl_hr5zo1vtwfkt8e"
+      ],
+      "bank_row_ids": [
+        "bank_iukeeq7foigsph"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Bank credit is exactly fifty paise below the recon group sum."
+    },
+    {
+      "case_id": "case_003",
+      "type": "EXCESS_CREDIT",
+      "impact_paise": 75,
+      "settlement_ids": [
+        "setl_qttduvxn4sc67y"
+      ],
+      "bank_row_ids": [
+        "bank_75egvcei6brgt0"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Bank credit is seventy-five paise above the recon group sum."
+    },
+    {
+      "case_id": "case_004",
+      "type": "MISSING_BANK_ENTRY",
+      "impact_paise": 5821811,
+      "settlement_ids": [
+        "setl_bju3s4t9wqnvo0"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "A processed settlement has no public bank row."
+    },
+    {
+      "case_id": "case_005",
+      "type": "AMBIGUOUS_CANDIDATES",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_8pcq8rs4ttqyjg"
+      ],
+      "bank_row_ids": [
+        "bank_p304k5tsibwl7f",
+        "bank_56v9o2ogeosvqh"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "First settlement participates in a complete K2,2 candidate graph."
+    },
+    {
+      "case_id": "case_006",
+      "type": "AMBIGUOUS_CANDIDATES",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_7htrgwjj4mavxy"
+      ],
+      "bank_row_ids": [
+        "bank_p304k5tsibwl7f",
+        "bank_56v9o2ogeosvqh"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Second settlement participates in a complete K2,2 candidate graph."
+    },
+    {
+      "case_id": "case_007",
+      "type": "AMBIGUOUS_CANDIDATES",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_8pcq8rs4ttqyjg",
+        "setl_7htrgwjj4mavxy"
+      ],
+      "bank_row_ids": [
+        "bank_p304k5tsibwl7f"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "First bank line has two equally valid settlement candidates."
+    },
+    {
+      "case_id": "case_008",
+      "type": "AMBIGUOUS_CANDIDATES",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_8pcq8rs4ttqyjg",
+        "setl_7htrgwjj4mavxy"
+      ],
+      "bank_row_ids": [
+        "bank_56v9o2ogeosvqh"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Second bank line has two equally valid settlement candidates."
+    },
+    {
+      "case_id": "case_009",
+      "type": "DUPLICATE_BANK_ENTRY",
+      "impact_paise": 6180567,
+      "settlement_ids": [
+        "setl_r21dl4459xjy8w"
+      ],
+      "bank_row_ids": [
+        "bank_9kwjnexfwcobd3",
+        "bank_c52s52t5kv5mot"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Two bank rows repeat the exact UTR and amount."
+    },
+    {
+      "case_id": "case_010",
+      "type": "DUPLICATE_IMPORT",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_owtaae3qeamunw"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [
+        "pay_hd4raowi6wao3b"
+      ],
+      "merchant_row_ids": [],
+      "reason": "An identical recon row repeats the same stable entity id."
+    },
+    {
+      "case_id": "case_011",
+      "type": "MISSING_MERCHANT_LEDGER_RECORD",
+      "impact_paise": 283073,
+      "settlement_ids": [
+        "setl_3ydj1b58mz7vv9"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [
+        "pay_o5vqbgjb2hnsaw"
+      ],
+      "merchant_row_ids": [],
+      "reason": "Razorpay contains a payment absent from merchant books."
+    },
+    {
+      "case_id": "case_012",
+      "type": "LEDGER_AMOUNT_MISMATCH",
+      "impact_paise": 123,
+      "settlement_ids": [
+        "setl_1wgs4b1noluc6n"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [
+        "pay_9whq8rity4he96"
+      ],
+      "merchant_row_ids": [
+        "book_an2lcwjvqv83lz"
+      ],
+      "reason": "Merchant books exceed the matching Razorpay row by ₹1.23."
+    },
+    {
+      "case_id": "case_013",
+      "type": "MISSING_RAZORPAY_ROW",
+      "impact_paise": 88800,
+      "settlement_ids": [],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [
+        "book_keotwv54qx051k"
+      ],
+      "reason": "Merchant books contain a payment reference absent from Razorpay recon."
+    },
+    {
+      "case_id": "case_014",
+      "type": "CURRENCY_MISMATCH",
+      "impact_paise": 6399188,
+      "settlement_ids": [
+        "setl_9dunje203qiduc"
+      ],
+      "bank_row_ids": [
+        "bank_02zhlqgusyt49t"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The bank row currency is not INR."
+    },
+    {
+      "case_id": "case_015",
+      "type": "MISSING_BANK_ENTRY",
+      "impact_paise": 6399188,
+      "settlement_ids": [
+        "setl_9dunje203qiduc"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The invalid-currency row cannot satisfy the INR settlement."
+    },
+    {
+      "case_id": "case_016",
+      "type": "MALFORMED_AMOUNT",
+      "impact_paise": null,
+      "settlement_ids": [],
+      "bank_row_ids": [
+        "bank_eq72v0g6m604o0"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The public bank amount has three decimal places and must be rejected."
+    },
+    {
+      "case_id": "case_017",
+      "type": "MISSING_BANK_ENTRY",
+      "impact_paise": 6233546,
+      "settlement_ids": [
+        "setl_564nq77z4v27gf"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The malformed row cannot satisfy its settlement."
+    },
+    {
+      "case_id": "case_018",
+      "type": "MISSING_BANK_ENTRY",
+      "impact_paise": 6690863,
+      "settlement_ids": [
+        "setl_es8pel0wd0skhf"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "No acceptable bank credit exists inside the configured posting window."
+    },
+    {
+      "case_id": "case_019",
+      "type": "UNKNOWN_BANK_CREDIT",
+      "impact_paise": 6690863,
+      "settlement_ids": [],
+      "bank_row_ids": [
+        "bank_y6b5ygzjo2r42z"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The delayed row remains outside the V1 posting window."
+    },
+    {
+      "case_id": "case_020",
+      "type": "HYPOTHESIS_REJECTED",
+      "impact_paise": null,
+      "settlement_ids": [
+        "setl_es8pel0wd0skhf"
+      ],
+      "bank_row_ids": [
+        "bank_y6b5ygzjo2r42z"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Narration evidence cannot override a failed POSTING_WINDOW_MATCH."
+    },
+    {
+      "case_id": "case_021",
+      "type": "UTR_CONFLICT",
+      "impact_paise": 4841678,
+      "settlement_ids": [
+        "setl_4bxxwu9cz8yto2"
+      ],
+      "bank_row_ids": [
+        "bank_t85wu87q90rmna"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The exact UTR appears on a debit rather than a credit."
+    },
+    {
+      "case_id": "case_022",
+      "type": "MISSING_BANK_ENTRY",
+      "impact_paise": 4841678,
+      "settlement_ids": [
+        "setl_4bxxwu9cz8yto2"
+      ],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "A debit cannot satisfy the expected settlement credit."
+    },
+    {
+      "case_id": "case_023",
+      "type": "UNKNOWN_BANK_CREDIT",
+      "impact_paise": 4841678,
+      "settlement_ids": [],
+      "bank_row_ids": [
+        "bank_t85wu87q90rmna"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The unexpected debit remains independently visible."
+    },
+    {
+      "case_id": "case_024",
+      "type": "DUPLICATE_IMPORT",
+      "impact_paise": null,
+      "settlement_ids": [],
+      "bank_row_ids": [],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [
+        "book_mldjq9acazmcwf"
+      ],
+      "reason": "An identical merchant row repeats the same stable ledger id."
+    },
+    {
+      "case_id": "case_025",
+      "type": "UNKNOWN_BANK_CREDIT",
+      "impact_paise": 786663,
+      "settlement_ids": [],
+      "bank_row_ids": [
+        "bank_pusxvnnwsq03k5"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "The credit has no matching settlement."
+    },
+    {
+      "case_id": "case_026",
+      "type": "INSUFFICIENT_EVIDENCE",
+      "impact_paise": null,
+      "settlement_ids": [],
+      "bank_row_ids": [
+        "bank_pusxvnnwsq03k5"
+      ],
+      "recon_entity_ids": [],
+      "merchant_row_ids": [],
+      "reason": "Hostile narration is data and supplies no valid candidate id."
+    }
+  ],
+  "feature_tags": [
+    "ADJUSTMENT_CREDIT",
+    "ADJUSTMENT_DEBIT",
+    "BANK_DIRECTION_CONFLICT",
+    "CASE_SPACE_UTR_VARIANT",
+    "CROSS_CYCLE_REFUND",
+    "CURRENCY_MISMATCH",
+    "DELAYED_POSTING_OUTSIDE_WINDOW",
+    "DUPLICATE_STABLE_LEDGER_ID",
+    "DUPLICATE_STABLE_RECON_ID",
+    "EXACT_UTR_DUPLICATE",
+    "GOLDEN_FEE_TAX",
+    "INDIAN_COMMA_FORMAT",
+    "K2_2_AMBIGUITY",
+    "KNOWN_PREFIX_UTR_VARIANT",
+    "LEDGER_AMOUNT_MISMATCH",
+    "MALFORMED_AMOUNT",
+    "MISSING_MERCHANT_LEDGER_RECORD",
+    "MISSING_RAZORPAY_ROW",
+    "MISSING_UTR_NARRATION_EVIDENCE",
+    "PARTIAL_REFUND",
+    "PROMPT_INJECTION_NARRATION"
+  ],
+  "golden_fee_tax": {
+    "entity_id": "pay_nxk1vw4q5j8fli",
+    "gross_paise": 100000,
+    "base_fee_paise": 2000,
+    "tax_paise": 360,
+    "fee_including_tax_paise": 2360,
+    "correct_credit_paise": 97640,
+    "incorrect_double_subtract_credit_paise": 97280
+  }
+}

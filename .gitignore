@@ -1,0 +1,15 @@
+node_modules/
+.pnpm-store/
+.next/
+.vinext/
+.wrangler/
+dist/
+coverage/
+.env
+.env.local
+data/heldout/private/
+*.log
+*.tsbuildinfo
+data/dev/output/determinism-*
+artifacts/social-preview.png
+Thumbs.db

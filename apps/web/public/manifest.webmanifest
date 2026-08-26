@@ -1,0 +1,9 @@
+{
+  "name": "Vouch — Settlement Evidence Desk",
+  "short_name": "Vouch",
+  "description": "Deterministic three-source settlement verification.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ece9df",
+  "theme_color": "#151713"
+}

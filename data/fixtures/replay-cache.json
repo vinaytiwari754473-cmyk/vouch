@@ -1,0 +1,76 @@
+{
+  "schema_version": "vouch.replay/1",
+  "description": "Reviewed synthetic hypotheses for the committed development input bundle. No live call is made during demo.",
+  "entries": [
+    {
+      "input_bundle_sha256": "7070d07f2bd54f40ae377470f12005c0dc30c5d51805e6c5671144d2a2b761ad",
+      "request_sha256": "71869ee9859ed810349b3c64317f2769aadee57c8385492b02f5db9c3be30988",
+      "provider": "offline-fixture",
+      "model": "vouch-replay-review/1",
+      "prompt_version": "vouch-investigator/1",
+      "response": {
+        "schema_version": "1",
+        "hypothesis_id": "hyp_narration_span_dev_01",
+        "subject_bank_entry_id": "bank_1v77ig6n8dfiie",
+        "hypothesis_type": "UTR_FORMAT_VARIANT",
+        "candidate_ids": [
+          "setl_py9hern3hehi91"
+        ],
+        "evidence_row_ids": [
+          "bank_86e68bc613ad3e3543113e10d9c0789318049276146aa56b62cdcbbe8f8c4610_0"
+        ],
+        "confidence": 0.78,
+        "requested_tests": [
+          "NORMALIZED_UTR_MATCH",
+          "EXACT_AMOUNT_MATCH",
+          "POSTING_WINDOW_MATCH",
+          "LEDGER_PRESENCE_CHECK"
+        ],
+        "literal_spans": [
+          {
+            "evidence_row_id": "bank_86e68bc613ad3e3543113e10d9c0789318049276146aa56b62cdcbbe8f8c4610_0",
+            "field": "narration",
+            "start": 20,
+            "end": 57,
+            "text": "HDFC / 1763 / 5937 / 0052 / 7056 / 30"
+          }
+        ]
+      }
+    },
+    {
+      "input_bundle_sha256": "7070d07f2bd54f40ae377470f12005c0dc30c5d51805e6c5671144d2a2b761ad",
+      "request_sha256": "2879f462c85e349efb4be1a439c966e4021dcac1c79fcf00e43020d6c5650771",
+      "provider": "offline-fixture",
+      "model": "vouch-replay-review/1",
+      "prompt_version": "vouch-investigator/1",
+      "response": {
+        "schema_version": "1",
+        "hypothesis_id": "hyp_delayed_credit_dev_01",
+        "subject_bank_entry_id": "bank_y6b5ygzjo2r42z",
+        "hypothesis_type": "UTR_FORMAT_VARIANT",
+        "candidate_ids": [
+          "setl_es8pel0wd0skhf"
+        ],
+        "evidence_row_ids": [
+          "bank_bf86a6b426cdd4532458fb1dd60cc0852c33baf754993e5d08ec5debb70c027d_0"
+        ],
+        "confidence": 0.91,
+        "requested_tests": [
+          "NORMALIZED_UTR_MATCH",
+          "EXACT_AMOUNT_MATCH",
+          "POSTING_WINDOW_MATCH",
+          "LEDGER_PRESENCE_CHECK"
+        ],
+        "literal_spans": [
+          {
+            "evidence_row_id": "bank_bf86a6b426cdd4532458fb1dd60cc0852c33baf754993e5d08ec5debb70c027d_0",
+            "field": "narration",
+            "start": 28,
+            "end": 50,
+            "text": "HDFC865740648507769086"
+          }
+        ]
+      }
+    }
+  ]
+}

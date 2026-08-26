@@ -1,0 +1,32 @@
+{
+  "name": "vouch",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Deterministic three-source settlement verification for Razorpay merchants.",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @vouch/web dev",
+    "build": "pnpm --filter @vouch/web build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "generate": "tsx packages/cli/src/index.ts generate",
+    "demo": "tsx packages/cli/src/index.ts demo",
+    "eval": "tsx packages/cli/src/index.ts eval",
+    "benchmark": "tsx packages/cli/src/benchmark.ts",
+    "check": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.19",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11"
+  },
+  "dependencies": {
+    "zod": "4.1.12"
+  }
+}
