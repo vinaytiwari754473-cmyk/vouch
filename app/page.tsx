@@ -39,6 +39,10 @@ function csvCell(value: string) {
   return `"${protectedValue.replaceAll('"', '""')}"`;
 }
 
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 function StatusMark({ status }: { status: CaseStatus }) {
   return <span className={`status-mark status-${status.toLowerCase()}`}>{status}</span>;
 }
@@ -62,7 +66,7 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
   return (
     <section className="case-sheet" aria-labelledby="case-heading">
       <div className="case-heading">
-        <div><p className="kicker">CASE FILE / {selected.shortId}</p><h1 id="case-heading">{selected.id}</h1></div>
+        <div><p className="kicker">CASE FILE / {selected.shortId}</p><h1 id="case-heading" tabIndex={-1}>{selected.id}</h1></div>
         <StatusMark status={selected.status} />
       </div>
 
@@ -245,8 +249,20 @@ export default function Home() {
       .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
   }, [filter, query]);
 
-  function runBatch() { setRunComplete(false); setRunStep(0); setNotice('RUNNING DETERMINISTIC PIPELINE'); }
-  function openCase(item: SettlementCase) { setSelectedId(item.id); setView('evidence'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  const sealed = notice.startsWith('ARTIFACT SEALED');
+
+  function runBatch() {
+    if (prefersReducedMotion()) {
+      setRunComplete(true); setRunStep(-1); setNotice('ARTIFACT SEALED · BYTE-STABLE');
+      return;
+    }
+    setRunComplete(false); setRunStep(0); setNotice('RUNNING DETERMINISTIC PIPELINE');
+  }
+  function openCase(item: SettlementCase) {
+    setSelectedId(item.id); setView('evidence');
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+    window.requestAnimationFrame(() => document.getElementById('case-heading')?.focus());
+  }
   function exportCsv() {
     const headers = ['settlement_id', 'overall_status', 'bank_status', 'ledger_status', 'expected_paise', 'actual_paise', 'exception'];
     const lines = settlementCases.map((item) => [item.id, item.status, item.bankStatus, item.ledgerStatus, String(item.expectedPaise), item.actualPaise === null ? '' : String(item.actualPaise), item.exceptionCode ?? ''].map(csvCell).join(','));
@@ -271,15 +287,15 @@ export default function Home() {
   }
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell view-${view} ${!runComplete ? 'is-running' : ''} ${sealed ? 'is-sealed' : ''}`}>
       <header className="masthead">
         <button className="wordmark" onClick={() => setView('evidence')} type="button" aria-label="Open Vouch evidence desk"><span>VOUCH</span><sup>01</sup></button>
         <nav className="primary-nav" aria-label="Product views">
-          <button className={view === 'evidence' ? 'active' : ''} onClick={() => setView('evidence')} type="button">Evidence desk</button>
-          <button className={view === 'exceptions' ? 'active' : ''} onClick={() => setView('exceptions')} type="button">Review <b>{batchSummary.reviewCases}</b></button>
-          <button className={view === 'evaluation' ? 'active' : ''} onClick={() => setView('evaluation')} type="button">Evaluation</button>
+          <button className={view === 'evidence' ? 'active' : ''} aria-current={view === 'evidence' ? 'page' : undefined} onClick={() => setView('evidence')} type="button">Evidence desk</button>
+          <button className={view === 'exceptions' ? 'active' : ''} aria-current={view === 'exceptions' ? 'page' : undefined} onClick={() => setView('exceptions')} type="button">Review <b>{batchSummary.reviewCases}</b></button>
+          <button className={view === 'evaluation' ? 'active' : ''} aria-current={view === 'evaluation' ? 'page' : undefined} onClick={() => setView('evaluation')} type="button">Evaluation</button>
         </nav>
-        <div className="batch-meta"><span className="status-dot" />{notice}</div>
+        <div className="batch-meta" role="status" aria-live="polite"><span className="status-dot" aria-hidden="true" />{notice}</div>
       </header>
 
       <section className="control-strip">
@@ -288,17 +304,34 @@ export default function Home() {
           <span><b>{batchSummary.reconRows}</b>RECON</span><span><b>{batchSummary.merchantRows}</b>BOOKS</span><span><b>{batchSummary.bankRows}</b>BANK</span><span><b>{batchSummary.settlements}</b>CASES</span>
         </div>
         <div className="mode-switch"><span>AI MODE</span><b>REPLAY</b><small>PINNED CACHE</small></div>
-        <button className="run-button" onClick={runBatch} disabled={!runComplete} type="button"><span>{runComplete ? 'RUN SEALED BATCH' : runStages[runStep]}</span><i>{runComplete ? '↗' : `${String(runStep + 1).padStart(2, '0')}/05`}</i></button>
+        <button className="run-button" onClick={runBatch} disabled={!runComplete} aria-busy={!runComplete} type="button"><span>{runComplete ? 'RUN SEALED BATCH' : runStages[runStep]}</span><i>{runComplete ? '↗' : `${String(runStep + 1).padStart(2, '0')}/05`}</i></button>
       </section>
 
-      {!runComplete ? <div className="run-tape" aria-live="polite"><span style={{ width: `${((runStep + 1) / runStages.length) * 100}%` }} /><b>{runStages[runStep]}</b></div> : null}
+      {!runComplete ? (
+        <div
+          className="run-tape"
+          role="progressbar"
+          aria-label="Deterministic proof run"
+          aria-valuemin={1}
+          aria-valuemax={runStages.length}
+          aria-valuenow={runStep + 1}
+          aria-valuetext={runStages[runStep]}
+        >
+          <div className="run-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(runStep + 1) / runStages.length})` }} /></div>
+          <div className="run-copy"><small>DETERMINISTIC PROOF RUN</small><b>{runStages[runStep]}</b></div>
+          <em aria-hidden="true">{String(runStep + 1).padStart(2, '0')} / {String(runStages.length).padStart(2, '0')}</em>
+          <div className="run-nodes" aria-hidden="true">
+            {runStages.map((stage, index) => <i className={index <= runStep ? 'passed' : ''} key={stage} />)}
+          </div>
+        </div>
+      ) : null}
 
       {view === 'evidence' ? (
         <div className="desk-layout">
           <aside className="case-index">
             <div className="index-head"><p className="kicker">SETTLEMENT REGISTER</p><b>{filteredCases.length.toString().padStart(2, '0')} / 24</b></div>
             <label className="search-box"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ID, UTR or exception" aria-label="Search cases" /></label>
-            <div className="filter-row">{(['ALL', 'PROVED', 'OPEN'] as const).map((item) => <button className={filter === item ? 'active' : ''} onClick={() => setFilter(item)} type="button" key={item}>{item}</button>)}</div>
+            <div className="filter-row">{(['ALL', 'PROVED', 'OPEN'] as const).map((item) => <button className={filter === item ? 'active' : ''} aria-pressed={filter === item} onClick={() => setFilter(item)} type="button" key={item}>{item}</button>)}</div>
             <div className="case-list">
               {filteredCases.map((item) => (
                 <button className={`case-card ${item.id === selected.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} type="button" key={item.id}>
@@ -312,7 +345,7 @@ export default function Home() {
               <button onClick={() => fileInput.current?.click()} type="button">IMPORT ARTIFACT</button><button onClick={exportCsv} type="button">EXPORT REVIEW CSV</button><button onClick={exportArtifact} type="button">EXPORT JSON</button>
             </div>
           </aside>
-          <EvidenceView selected={selected} />
+          <EvidenceView key={selected.id} selected={selected} />
         </div>
       ) : view === 'exceptions' ? <ExceptionsView onSelect={openCase} /> : <EvaluationView />}
 
