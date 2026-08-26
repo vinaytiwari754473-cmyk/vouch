@@ -47,12 +47,14 @@ This is the visual answer to “are you just matching payouts to a bank statemen
 Open Evaluation. Say clearly that this is the development synthetic batch, not held-out and not real
 merchant prevalence. Compare the literal baseline, deterministic engine and verified-AI replay using
 exact k/n metrics. Point to observed false automatic verifications and the Wilson bound language.
+Say the measured result, not a rounded percentage: hybrid automated 10 cases, all 10 were correct,
+unique-case recall was 10/11, and every accepted residual was exactly zero paise.
 
 ## 4:45–5:00 — Close
 
 Run the sealed batch. As the five stages advance, finish with:
 
-> Every paise is explained—or it is honestly escalated with its evidence and next action.
+> AI proposes. The verifier proves. Every paise is explained—or honestly escalated.
 
 Keep the exception, assisted and injection case URLs/state ready before recording. Reset the page
 between takes; no manual review state should carry over.
