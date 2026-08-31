@@ -2,13 +2,13 @@
 
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  batchSummary,
+  type ArtifactProjection,
   evaluationRows,
-  runStages,
-  settlementCases,
+  validateAndProjectArtifact,
+  verificationStages,
   type CaseStatus,
   type SettlementCase,
-} from './demo-data';
+} from './artifact-data';
 
 type View = 'evidence' | 'exceptions' | 'evaluation';
 type CaseFilter = 'ALL' | 'PROVED' | 'OPEN';
@@ -41,6 +41,17 @@ function csvCell(value: string) {
 
 function prefersReducedMotion() {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+async function fetchSealedProjection(): Promise<ArtifactProjection> {
+  const response = await fetch('/data/demo-run.json', { cache: 'no-store' });
+  if (!response.ok) throw new Error(`sealed artifact request failed (${response.status})`);
+  return validateAndProjectArtifact(await response.text());
+}
+
+function nextPaint(): Promise<void> {
+  if (prefersReducedMotion()) return Promise.resolve();
+  return new Promise((resolve) => window.requestAnimationFrame(() => resolve()));
 }
 
 function StatusMark({ status }: { status: CaseStatus }) {
@@ -87,7 +98,7 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
               <span>ENTITY</span><span>TYPE</span><span>GROSS</span><span>FEE / TAX</span><span>SETTLEMENT EFFECT</span><span>BOOKS</span>
             </div>
             {selected.rows.map((row) => (
-              <div className="evidence-row" role="row" key={row.id}>
+              <div className="evidence-row" role="row" key={row.rowId}>
                 <code>{row.id}</code><span>{row.kind}</span><span>{formatPaise(row.grossPaise)}</span>
                 <span>{row.feePaise ? `${formatPaise(row.feePaise)} / ${formatPaise(row.taxPaise)}` : '—'}</span>
                 <b>{formatPaise(row.contributionPaise, true)}</b><em className={`ledger-${row.merchant.toLowerCase()}`}>{row.merchant}</em>
@@ -115,7 +126,8 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
           {selected.aiNote ? (
             <aside className={`ai-marginalia ai-${selected.aiNote.verdict.toLowerCase()}`}>
               <div><span>AI HYPOTHESIS</span><b>{selected.aiNote.verdict} · NOT A VERDICT</b></div>
-              <blockquote>“{selected.aiNote.span}”</blockquote><p>{selected.aiNote.explanation}</p>
+              <blockquote><small>SOURCE NARRATION</small>“{selected.aiNote.sourceNarration}”</blockquote><p>{selected.aiNote.explanation}</p>
+              <div className="ai-tests">{selected.aiNote.tests.map((test) => <small key={test}>{test}</small>)}</div>
             </aside>
           ) : null}
         </div>
@@ -143,7 +155,7 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
               <small>{selected.status === 'ASSISTED' ? 'VERIFIED AFTER AI PROPOSAL' : 'THREE WITNESSES AGREE'}</small><b>PROVED</b><span>VOUCH / ZERO PAISE</span>
             </div>
           ) : (
-            <div className="exception-ticket"><span>{selected.exceptionCode}</span><p>{selected.exceptionCopy}</p><b>NEXT / {selected.suggestedAction}</b></div>
+            <div className="exception-ticket"><span>{selected.exceptionCodes.join(' · ') || 'REVIEW REQUIRED'}</span><p>{selected.exceptionCopy ?? 'The artifact leaves this case open without claiming a proof.'}</p><b>NEXT / {selected.suggestedAction ?? 'MANUAL REVIEW'}</b></div>
           )}
 
           <div className="identity-meta">
@@ -158,19 +170,20 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
           {selected.audit.map((event, index) => (
             <article className={`audit-event audit-${event.tone}`} key={`${event.stage}-${index}`}><span>{event.stage}</span><b>{event.title}</b><p>{event.detail}</p></article>
           ))}
+          {selected.audit.length === 0 ? <p className="empty-evidence">No case-scoped audit event was recorded.</p> : null}
         </div>
       </div>
     </section>
   );
 }
 
-function ExceptionsView({ onSelect }: { onSelect: (item: SettlementCase) => void }) {
-  const exceptions = settlementCases.filter((item) => item.status !== 'PROVED' && item.status !== 'ASSISTED');
+function ExceptionsView({ cases, exceptionRecords, onSelect }: { cases: SettlementCase[]; exceptionRecords: number; onSelect: (item: SettlementCase) => void }) {
+  const exceptions = cases.filter((item) => item.status !== 'PROVED' && item.status !== 'ASSISTED');
   const cashExposure = exceptions.reduce((sum, item) => item.actualPaise === null ? sum + item.expectedPaise : sum + Math.abs(item.actualPaise - item.expectedPaise), 0);
   return (
     <section className="room-view">
       <div className="room-title">
-        <div><p className="kicker">EXCEPTION ROOM / 05 SHOWCASE FILES / 26 PLANTED LABELS</p><h1>Nothing disappears<br />into “needs review.”</h1></div>
+        <div><p className="kicker">EXCEPTION ROOM / {exceptions.length} OPEN CASES / {exceptionRecords} RECORDS</p><h1>Nothing disappears<br />into “needs review.”</h1></div>
         <div className="room-number"><span>VISIBLE CASH EXPOSURE</span><strong>{formatPaise(cashExposure)}</strong><small>Different categories are never netted together.</small></div>
       </div>
       <div className="exception-ledger">
@@ -197,7 +210,7 @@ function ExceptionsView({ onSelect }: { onSelect: (item: SettlementCase) => void
 function EvaluationView() {
   return (
     <section className="room-view eval-view">
-      <div className="eval-banner"><span>DEVELOPMENT BATCH</span><b>SYNTHETIC · PRE-REGISTERED METRICS · NOT HELD-OUT</b><em>seed / {batchSummary.seed}</em></div>
+      <div className="eval-banner"><span>DEVELOPMENT BATCH</span><b>SYNTHETIC · PRE-REGISTERED METRICS · NOT HELD-OUT</b><em>seed / vouch-dev-seed-2026-08-25-v1</em></div>
       <div className="room-title">
         <div><p className="kicker">SAFETY BEFORE COVERAGE</p><h1>Abstention beats<br />a plausible lie.</h1></div>
         <div className="room-number safe-number"><span>VOUCH HYBRID / OBSERVED</span><strong>0 / 10</strong><small>false automatic verifications · Wilson upper bound lives in the artifact</small></div>
@@ -222,42 +235,77 @@ function EvaluationView() {
 
 export default function Home() {
   const [view, setView] = useState<View>('evidence');
-  const [selectedId, setSelectedId] = useState(settlementCases[0].id);
+  const [projection, setProjection] = useState<ArtifactProjection | null>(null);
+  const [selectedId, setSelectedId] = useState('');
   const [filter, setFilter] = useState<CaseFilter>('ALL');
   const [query, setQuery] = useState('');
-  const [runStep, setRunStep] = useState(-1);
-  const [runComplete, setRunComplete] = useState(true);
-  const [notice, setNotice] = useState('REPLAY MODE · ZERO API KEYS');
+  const [verifyStep, setVerifyStep] = useState(-1);
+  const [verifying, setVerifying] = useState(false);
+  const [notice, setNotice] = useState('LOADING SEALED ARTIFACT');
+  const [loadError, setLoadError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (runStep < 0 || runStep >= runStages.length) return;
-    const timer = window.setTimeout(() => {
-      if (runStep === runStages.length - 1) {
-        setRunComplete(true); setRunStep(-1); setNotice('ARTIFACT SEALED · BYTE-STABLE');
-      } else setRunStep((current) => current + 1);
-    }, 620);
-    return () => window.clearTimeout(timer);
-  }, [runStep]);
+    let cancelled = false;
+    void fetchSealedProjection()
+      .then((next) => {
+        if (cancelled) return;
+        setProjection(next);
+        setSelectedId(next.cases[0]?.id ?? '');
+        setNotice(`INTERNALLY CONSISTENT · ${next.batch.runId}`);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        setLoadError(error instanceof Error ? error.message : 'unknown validation error');
+        setNotice('SEALED ARTIFACT REJECTED');
+      });
+    return () => { cancelled = true; };
+  }, []);
 
-  const selected = settlementCases.find((item) => item.id === selectedId) ?? settlementCases[0];
+  const cases = useMemo(() => projection?.cases ?? [], [projection]);
+  const batch = projection?.batch;
+  const selected = cases.find((item) => item.id === selectedId) ?? cases[0];
   const filteredCases = useMemo(() => {
     const lowered = query.trim().toLowerCase();
-    return [...settlementCases]
+    return [...cases]
       .filter((item) => filter === 'ALL' || (filter === 'PROVED' ? ['PROVED', 'ASSISTED'].includes(item.status) : !['PROVED', 'ASSISTED'].includes(item.status)))
-      .filter((item) => !lowered || `${item.id} ${item.utr ?? ''} ${item.exceptionCode ?? ''}`.toLowerCase().includes(lowered))
+      .filter((item) => !lowered || `${item.id} ${item.utr ?? ''} ${item.exceptionCodes.join(' ')}`.toLowerCase().includes(lowered))
       .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
-  }, [filter, query]);
+  }, [cases, filter, query]);
 
-  const sealed = notice.startsWith('ARTIFACT SEALED');
+  const sealed = notice.startsWith('INTERNALLY CONSISTENT');
 
-  function runBatch() {
-    if (prefersReducedMotion()) {
-      setRunComplete(true); setRunStep(-1); setNotice('ARTIFACT SEALED · BYTE-STABLE');
-      return;
+  async function verifyArtifact() {
+    if (projection === null || verifying) return;
+    setVerifying(true);
+    setVerifyStep(0);
+    setNotice('VERIFYING ARTIFACT BYTES');
+    try {
+      let artifactText = projection.canonicalText;
+      if (projection.isSealedDemo) {
+        const response = await fetch('/data/demo-run.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`sealed artifact request failed (${response.status})`);
+        artifactText = await response.text();
+      }
+      setVerifyStep(1);
+      await nextPaint();
+      const next = validateAndProjectArtifact(artifactText);
+      setVerifyStep(2);
+      await nextPaint();
+      setVerifyStep(3);
+      await nextPaint();
+      setVerifyStep(4);
+      setProjection(next);
+      if (!next.cases.some((item) => item.id === selectedId)) setSelectedId(next.cases[0]?.id ?? '');
+      setNotice(`INTERNALLY CONSISTENT · SHA ${next.batch.artifactSha256.slice(0, 12)}…`);
+    } catch (error: unknown) {
+      setNotice(`VERIFICATION REJECTED · ${error instanceof Error ? error.message.toUpperCase().slice(0, 72) : 'INVALID ARTIFACT'}`);
+    } finally {
+      setVerifying(false);
+      setVerifyStep(-1);
     }
-    setRunComplete(false); setRunStep(0); setNotice('RUNNING DETERMINISTIC PIPELINE');
   }
+
   function openCase(item: SettlementCase) {
     setSelectedId(item.id); setView('evidence');
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
@@ -265,63 +313,98 @@ export default function Home() {
   }
   function exportCsv() {
     const headers = ['settlement_id', 'overall_status', 'bank_status', 'ledger_status', 'expected_paise', 'actual_paise', 'exception'];
-    const lines = settlementCases.map((item) => [item.id, item.status, item.bankStatus, item.ledgerStatus, String(item.expectedPaise), item.actualPaise === null ? '' : String(item.actualPaise), item.exceptionCode ?? ''].map(csvCell).join(','));
+    const lines = cases.map((item) => [item.id, item.status, item.bankStatus, item.ledgerStatus, String(item.expectedPaise), item.actualPaise === null ? '' : String(item.actualPaise), item.exceptionCodes.join('|')].map(csvCell).join(','));
     downloadText('vouch-review-queue.csv', [headers.map(csvCell).join(','), ...lines].join('\r\n'), 'text/csv;charset=utf-8');
     setNotice('REVIEW CSV EXPORTED · FORMULA-SAFE');
   }
   function exportArtifact() {
-    const anchor = document.createElement('a');
-    anchor.href = '/data/demo-run.json';
-    anchor.download = 'vouch-demo-run.json';
-    document.body.appendChild(anchor); anchor.click(); anchor.remove();
-    setNotice(`CANONICAL ARTIFACT EXPORTED · ${batchSummary.runId}`);
+    if (projection === null) return;
+    downloadText(`${projection.batch.runId}.json`, `${projection.canonicalText}\n`, 'application/json;charset=utf-8');
+    setNotice(`CANONICAL ARTIFACT EXPORTED · ${projection.batch.runId}`);
   }
   async function importArtifact(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]; if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text()) as { schemaVersion?: string; settlements?: unknown[]; summary?: { settlements?: number } };
-      if (parsed.schemaVersion !== 'vouch.run/1' || !Array.isArray(parsed.settlements)) throw new Error('wrong schema');
-      setNotice(`ARTIFACT CHECKED · ${parsed.summary?.settlements ?? parsed.settlements.length} CASES · LOCAL ONLY`);
-    } catch { setNotice('IMPORT REJECTED · EXPECTED vouch.run/1 JSON'); }
+      if (file.size > 25 * 1024 * 1024) throw new Error('file exceeds 25 MiB');
+      const next = validateAndProjectArtifact(await file.text());
+      setProjection(next);
+      setSelectedId(next.cases[0]?.id ?? '');
+      setView('evidence');
+      setQuery('');
+      setNotice(`INTERNALLY CONSISTENT · ${next.cases.length} CASES · LOCAL IMPORT`);
+    } catch (error: unknown) {
+      setNotice(`IMPORT REJECTED · ${error instanceof Error ? error.message.toUpperCase().slice(0, 72) : 'INVALID ARTIFACT'}`);
+    }
     finally { event.target.value = ''; }
   }
 
+  async function retryLoad() {
+    setLoadError(null);
+    setNotice('LOADING SEALED ARTIFACT');
+    try {
+      const next = await fetchSealedProjection();
+      setProjection(next);
+      setSelectedId(next.cases[0]?.id ?? '');
+      setNotice(`INTERNALLY CONSISTENT · ${next.batch.runId}`);
+    } catch (error: unknown) {
+      setLoadError(error instanceof Error ? error.message : 'unknown validation error');
+      setNotice('SEALED ARTIFACT REJECTED');
+    }
+  }
+
+  if (projection === null || batch === undefined) {
+    return (
+      <main className="app-shell loading-shell">
+        <header className="masthead">
+          <div className="wordmark"><span>VOUCH</span><sup>01</sup></div>
+          <div className="batch-meta" role="status" aria-live="polite"><span className="status-dot" aria-hidden="true" />{notice}</div>
+        </header>
+        <section className="artifact-loader">
+          <p className="kicker">EVIDENCE DESK / TRUST GATE</p>
+          <h1>{loadError === null ? 'Verifying the sealed artifact.' : 'The artifact did not pass.'}</h1>
+          <p>{loadError === null ? 'Vouch checks the source hashes, row partition, references, equations, audit trace, summary and artifact identity before displaying one rupee.' : loadError}</p>
+          {loadError === null ? <span className="loader-line" aria-hidden="true" /> : <button className="run-button loader-retry" onClick={() => void retryLoad()} type="button"><span>TRY SEALED ARTIFACT AGAIN</span><i>↗</i></button>}
+        </section>
+      </main>
+    );
+  }
+
   return (
-    <main className={`app-shell view-${view} ${!runComplete ? 'is-running' : ''} ${sealed ? 'is-sealed' : ''}`}>
+    <main className={`app-shell view-${view} ${verifying ? 'is-running' : ''} ${sealed ? 'is-sealed' : ''}`}>
       <header className="masthead">
         <button className="wordmark" onClick={() => setView('evidence')} type="button" aria-label="Open Vouch evidence desk"><span>VOUCH</span><sup>01</sup></button>
         <nav className="primary-nav" aria-label="Product views">
           <button className={view === 'evidence' ? 'active' : ''} aria-current={view === 'evidence' ? 'page' : undefined} onClick={() => setView('evidence')} type="button">Evidence desk</button>
-          <button className={view === 'exceptions' ? 'active' : ''} aria-current={view === 'exceptions' ? 'page' : undefined} onClick={() => setView('exceptions')} type="button">Review <b>{batchSummary.reviewCases}</b></button>
-          <button className={view === 'evaluation' ? 'active' : ''} aria-current={view === 'evaluation' ? 'page' : undefined} onClick={() => setView('evaluation')} type="button">Evaluation</button>
+          <button className={view === 'exceptions' ? 'active' : ''} aria-current={view === 'exceptions' ? 'page' : undefined} onClick={() => setView('exceptions')} type="button">Review <b>{batch.reviewCases}</b></button>
+          {projection.isSealedDemo ? <button className={view === 'evaluation' ? 'active' : ''} aria-current={view === 'evaluation' ? 'page' : undefined} onClick={() => setView('evaluation')} type="button">Evaluation</button> : null}
         </nav>
         <div className="batch-meta" role="status" aria-live="polite"><span className="status-dot" aria-hidden="true" />{notice}</div>
       </header>
 
       <section className="control-strip">
-        <div className="batch-identity"><span>PUBLIC INPUT MANIFEST</span><b>VCH / 25-AUG-2026 / A</b><code>SHA {batchSummary.artifact.slice(0, 8)}…{batchSummary.artifact.slice(-4)}</code></div>
+        <div className="batch-identity"><span>CANONICAL ARTIFACT</span><b>VCH / {batch.runDate} / {batch.runId.slice(-6).toUpperCase()}</b><code>SHA {batch.artifactSha256.slice(0, 8)}…{batch.artifactSha256.slice(-4)}</code></div>
         <div className="batch-counts" aria-label="Batch counts">
-          <span><b>{batchSummary.reconRows}</b>RECON</span><span><b>{batchSummary.merchantRows}</b>BOOKS</span><span><b>{batchSummary.bankRows}</b>BANK</span><span><b>{batchSummary.settlements}</b>CASES</span>
+          <span><b>{batch.reconRows}</b>RECON</span><span><b>{batch.merchantRows}</b>BOOKS</span><span><b>{batch.bankRows}</b>BANK</span><span><b>{batch.settlements}</b>CASES</span>
         </div>
-        <div className="mode-switch"><span>AI MODE</span><b>REPLAY</b><small>PINNED CACHE</small></div>
-        <button className="run-button" onClick={runBatch} disabled={!runComplete} aria-busy={!runComplete} type="button"><span>{runComplete ? 'RUN SEALED BATCH' : runStages[runStep]}</span><i>{runComplete ? '↗' : `${String(runStep + 1).padStart(2, '0')}/05`}</i></button>
+        <div className="mode-switch"><span>AI MODE</span><b>{batch.aiMode.toUpperCase()}</b><small>{batch.aiMode === 'replay' ? 'PINNED CACHE' : 'ARTIFACT CONFIG'}</small></div>
+        <button className="run-button" onClick={() => void verifyArtifact()} disabled={verifying} aria-busy={verifying} type="button"><span>{verifying ? verificationStages[Math.max(0, verifyStep)] : 'VERIFY CURRENT ARTIFACT'}</span><i>{verifying ? `${String(verifyStep + 1).padStart(2, '0')}/05` : '↗'}</i></button>
       </section>
 
-      {!runComplete ? (
+      {verifying ? (
         <div
           className="run-tape"
           role="progressbar"
-          aria-label="Deterministic proof run"
+          aria-label="Sealed artifact verification"
           aria-valuemin={1}
-          aria-valuemax={runStages.length}
-          aria-valuenow={runStep + 1}
-          aria-valuetext={runStages[runStep]}
+          aria-valuemax={verificationStages.length}
+          aria-valuenow={verifyStep + 1}
+          aria-valuetext={verificationStages[Math.max(0, verifyStep)]}
         >
-          <div className="run-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(runStep + 1) / runStages.length})` }} /></div>
-          <div className="run-copy"><small>DETERMINISTIC PROOF RUN</small><b>{runStages[runStep]}</b></div>
-          <em aria-hidden="true">{String(runStep + 1).padStart(2, '0')} / {String(runStages.length).padStart(2, '0')}</em>
+          <div className="run-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(verifyStep + 1) / verificationStages.length})` }} /></div>
+          <div className="run-copy"><small>SEALED ARTIFACT VERIFICATION</small><b>{verificationStages[Math.max(0, verifyStep)]}</b></div>
+          <em aria-hidden="true">{String(verifyStep + 1).padStart(2, '0')} / {String(verificationStages.length).padStart(2, '0')}</em>
           <div className="run-nodes" aria-hidden="true">
-            {runStages.map((stage, index) => <i className={index <= runStep ? 'passed' : ''} key={stage} />)}
+            {verificationStages.map((stage, index) => <i className={index <= verifyStep ? 'passed' : ''} key={stage} />)}
           </div>
         </div>
       ) : null}
@@ -329,12 +412,12 @@ export default function Home() {
       {view === 'evidence' ? (
         <div className="desk-layout">
           <aside className="case-index">
-            <div className="index-head"><p className="kicker">SETTLEMENT REGISTER</p><b>{filteredCases.length.toString().padStart(2, '0')} / 24</b></div>
+            <div className="index-head"><p className="kicker">SETTLEMENT REGISTER</p><b>{filteredCases.length.toString().padStart(2, '0')} / {batch.settlements}</b></div>
             <label className="search-box"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ID, UTR or exception" aria-label="Search cases" /></label>
             <div className="filter-row">{(['ALL', 'PROVED', 'OPEN'] as const).map((item) => <button className={filter === item ? 'active' : ''} aria-pressed={filter === item} onClick={() => setFilter(item)} type="button" key={item}>{item}</button>)}</div>
             <div className="case-list">
               {filteredCases.map((item) => (
-                <button className={`case-card ${item.id === selected.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} type="button" key={item.id}>
+                <button className={`case-card ${item.id === selected?.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} type="button" key={item.id}>
                   <span className="case-number">/{item.shortId}</span><StatusMark status={item.status} /><b>{formatPaise(item.expectedPaise)}</b><code>{item.id}</code>
                   <small>{item.exceptionCode ?? (item.status === 'ASSISTED' ? 'AI EDGE · CODE VERIFIED' : 'THREE SOURCES AGREE')}</small>
                 </button>
@@ -345,9 +428,9 @@ export default function Home() {
               <button onClick={() => fileInput.current?.click()} type="button">IMPORT ARTIFACT</button><button onClick={exportCsv} type="button">EXPORT REVIEW CSV</button><button onClick={exportArtifact} type="button">EXPORT JSON</button>
             </div>
           </aside>
-          <EvidenceView key={selected.id} selected={selected} />
+          {selected === undefined ? <section className="case-sheet empty-artifact"><p className="kicker">EMPTY ARTIFACT</p><h1>No settlement decisions were recorded.</h1></section> : <EvidenceView key={selected.id} selected={selected} />}
         </div>
-      ) : view === 'exceptions' ? <ExceptionsView onSelect={openCase} /> : <EvaluationView />}
+      ) : view === 'exceptions' ? <ExceptionsView cases={cases} exceptionRecords={batch.exceptionRecords} onSelect={openCase} /> : projection.isSealedDemo ? <EvaluationView /> : null}
 
       <footer className="principle-bar"><span>AI PROPOSES.</span><span>THE VERIFIER PROVES.</span><span>EVERY PAISE IS EXPLAINED—OR HONESTLY ESCALATED.</span></footer>
     </main>

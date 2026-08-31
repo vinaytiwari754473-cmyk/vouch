@@ -40,8 +40,13 @@ This process produced concrete corrections:
 - Public input components and the combined bundle are SHA-256 identified.
 - The replay cache is selected only by the exact public-input bundle hash. A miss or malformed
   cache safely falls back to deterministic evidence.
+- Optional live capture records the exact public request, adapter and provider separately, response
+  identifiers, timing/usage, raw and parsed response hashes, verifier verdicts and a self-hash. Its
+  replay candidate remains inert until explicit human review and promotion.
 - Canonical decision artifacts are byte-stable across repeated runs and input shuffles.
 - Truth stays in `data/dev/truth` and is read only by the evaluation boundary.
+- The Evidence Desk runs the same browser-safe artifact consistency validator before rendering the
+  sealed demo or any local import. “Internally consistent” is not presented as a signature.
 
 ## Evaluation discipline
 
@@ -68,4 +73,3 @@ at the planted-instance identity level: one evidence situation can legitimately 
 exception and a downstream consequence, so category taxonomy still has room to improve. Vouch
 does not claim production readiness, bank certification, fraud detection, payout coverage, or
 support for every bank export.
-

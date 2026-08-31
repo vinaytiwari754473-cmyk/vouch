@@ -24,6 +24,9 @@ incomplete ledger as fully proved.
 | Row order changes outcome | canonical occurrence identity and stable sorts | determinism test failure |
 | CSV formula injection | prefix dangerous exported cells with apostrophe | safe export |
 | Live model/network outage | committed replay default; miss remains unresolved | one case escalated |
+| Tampered imported artifact | recompute source/input/audit/artifact hashes, references, equations and summary | import rejected; current desk retained |
+| Capture provenance altered | canonical hashes bind request, raw response, parsed hypotheses and verifier verdicts | capture/replay review fails |
+| Self-hash mistaken for authorship | UI says internally consistent, never authenticated or signed | no identity claim |
 
 ## Explicit non-goals
 

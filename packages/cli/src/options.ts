@@ -1,6 +1,6 @@
 export const DEFAULT_RUN_AT_EPOCH_SECONDS = 1_787_639_400;
 
-export type HelpTopic = "generate" | "run" | "demo" | "eval" | "report" | null;
+export type HelpTopic = "generate" | "run" | "demo" | "eval" | "report" | "capture-ai" | null;
 
 export interface HelpOptions {
   readonly command: "help";
@@ -54,7 +54,30 @@ export interface ReportOptions {
   readonly force: boolean;
 }
 
-export type CliOptions = HelpOptions | GenerateOptions | RunOptions | EvalOptions | ReportOptions;
+export interface CaptureAiOptions {
+  readonly command: "capture-ai";
+  readonly inputDirectory: string;
+  readonly outputFile: string;
+  readonly provider: "codex-cli" | "claude-cli" | "anthropic" | "openai";
+  readonly model: string | undefined;
+  readonly promptVersion: string;
+  readonly maxOutputTokens: number;
+  readonly timeoutSeconds: number;
+  readonly maxBudgetUsd: string;
+  readonly runAtEpochSeconds: number;
+  readonly postingWindowDays: number;
+  readonly minimumTruncatedUtrLength: number;
+  readonly knownUtrPrefixes: readonly string[];
+  readonly force: boolean;
+}
+
+export type CliOptions =
+  | HelpOptions
+  | GenerateOptions
+  | RunOptions
+  | EvalOptions
+  | ReportOptions
+  | CaptureAiOptions;
 
 export class CliUsageError extends Error {
   public constructor(message: string) {
@@ -140,6 +163,29 @@ export function parseCliOptions(arguments_: readonly string[]): CliOptions {
     return result;
   }
 
+  if (command === "capture-ai") {
+    const result: CaptureAiOptions = {
+      command,
+      inputDirectory: tokens.optional("--input") ?? "data/dev/public",
+      outputFile: tokens.optional("--output") ?? "artifacts/ai-capture.json",
+      provider:
+        tokens.optionalChoice("--provider", ["codex-cli", "claude-cli", "anthropic", "openai"] as const) ??
+        "codex-cli",
+      model: tokens.optional("--model"),
+      promptVersion: tokens.optional("--prompt-version") ?? "vouch-investigator/1",
+      maxOutputTokens: tokens.optionalInteger("--max-output-tokens", 256, 16_384) ?? 4_096,
+      timeoutSeconds: tokens.optionalInteger("--timeout-seconds", 10, 600) ?? 180,
+      maxBudgetUsd: tokens.optionalDecimal("--max-budget-usd", "0.50"),
+      runAtEpochSeconds: tokens.optionalInteger("--clock", 0) ?? DEFAULT_RUN_AT_EPOCH_SECONDS,
+      postingWindowDays: tokens.optionalInteger("--posting-window", 0, 31) ?? 3,
+      minimumTruncatedUtrLength: tokens.optionalInteger("--min-truncated-utr", 1) ?? 10,
+      knownUtrPrefixes: tokens.repeated("--known-prefix"),
+      force: tokens.flag("--force")
+    };
+    tokens.assertEmpty();
+    return result;
+  }
+
   const result: ReportOptions = {
     command,
     artifactFile: tokens.optional("--artifact") ?? "data/dev/output/run-artifact.json",
@@ -165,6 +211,9 @@ export function usage(topic: HelpTopic = null): string {
   if (topic === "report") {
     return "Usage: vouch report [--artifact FILE] [--evaluation FILE] [--output FILE] [--audit-csv FILE] [--force]";
   }
+  if (topic === "capture-ai") {
+    return "Usage: vouch capture-ai [--input DIR] [--provider codex-cli|claude-cli|anthropic|openai] [--model ID] [--output FILE] [--prompt-version ID] [--max-output-tokens N] [--timeout-seconds N] [--max-budget-usd USD] [--force]";
+  }
   return [
     "Vouch — deterministic three-source settlement verification",
     "",
@@ -174,13 +223,14 @@ export function usage(topic: HelpTopic = null): string {
     "  demo       Offline hybrid run using the committed replay cache",
     "  eval       Score frozen artifacts against the independent truth manifest",
     "  report     Render a standalone HTML report from an artifact",
+    "  capture-ai Explicitly call one model and write a provenance capture (never used by demo)",
     "",
     "Run `vouch help <command>` for command options. Demo requires no API key."
   ].join("\n");
 }
 
 function isCommand(value: string): value is Exclude<HelpTopic, null> {
-  return value === "generate" || value === "run" || value === "demo" || value === "eval" || value === "report";
+  return value === "generate" || value === "run" || value === "demo" || value === "eval" || value === "report" || value === "capture-ai";
 }
 
 function parseHelpTopic(value: string | undefined): HelpTopic {
@@ -261,6 +311,14 @@ class OptionTokens {
       throw new CliUsageError(`${name} must be between ${minimum} and ${maximum}`);
     }
     return parsed;
+  }
+
+  public optionalDecimal(name: string, fallback: string): string {
+    const value = this.optional(name) ?? fallback;
+    if (!/^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/.test(value) || Number(value) <= 0) {
+      throw new CliUsageError(`${name} must be a positive decimal with at most two decimal places`);
+    }
+    return value;
   }
 
   public assertEmpty(): void {

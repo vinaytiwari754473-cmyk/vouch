@@ -1,3 +1,4 @@
+import { canonicalJson, sha256Hex } from "@vouch/core";
 import { describe, expect, it } from "vitest";
 
 import { selectReplayHypotheses } from "./replay.js";
@@ -57,5 +58,42 @@ describe("offline replay cache", () => {
         bundle
       )
     ).toThrow(/duplicate replay request/);
+  });
+
+  it("loads a reviewed batch capture as individual untrusted hypotheses", () => {
+    const request = { schema_version: "vouch.ai-request/1", evidence: "public" };
+    const response = [{ hypothesis_id: "one" }, { hypothesis_id: "two" }];
+    const selected = selectReplayHypotheses(
+      {
+        schema_version: "vouch.replay/1",
+        entries: [
+          {
+            input_bundle_sha256: bundle,
+            request_sha256: sha256Hex(canonicalJson(request)),
+            request,
+            response_sha256: sha256Hex(canonicalJson(response)),
+            response
+          }
+        ]
+      },
+      bundle
+    );
+
+    expect(selected.hypotheses).toEqual([{ hypothesis_id: "one" }, { hypothesis_id: "two" }]);
+  });
+
+  it("rejects a tampered captured request or response", () => {
+    const request = { prompt: "bounded" };
+    const response = [{ hypothesis_id: "one" }];
+    const entry = {
+      input_bundle_sha256: bundle,
+      request_sha256: sha256Hex(canonicalJson(request)),
+      request,
+      response_sha256: sha256Hex(canonicalJson(response)),
+      response
+    };
+
+    expect(() => selectReplayHypotheses({ schema_version: "vouch.replay/1", entries: [{ ...entry, request: { prompt: "changed" } }] }, bundle)).toThrow(/request SHA-256/);
+    expect(() => selectReplayHypotheses({ schema_version: "vouch.replay/1", entries: [{ ...entry, response: [{ hypothesis_id: "changed" }] }] }, bundle)).toThrow(/response SHA-256/);
   });
 });

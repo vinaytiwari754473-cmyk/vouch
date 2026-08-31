@@ -30,6 +30,12 @@ export {
 } from "./date";
 export { canonicalJson, CanonicalJsonError, compareCodeUnits } from "./canonical";
 export { sha256Hex } from "./sha256";
+export {
+  ArtifactValidationError,
+  MAX_RUN_ARTIFACT_JSON_BYTES,
+  validateRunArtifact,
+  validateRunArtifactJson,
+} from "./artifact-validation";
 export { analyzeMatching, maximumMatching } from "./matching";
 export { deterministicUtrEvidence, exactUtrKey, literalSpanMatchesUtr } from "./utr";
 export type {

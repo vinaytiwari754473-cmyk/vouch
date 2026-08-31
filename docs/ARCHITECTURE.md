@@ -51,14 +51,17 @@ objects. Runtime and provider provenance are stored outside the canonical decisi
 
 ### `@vouch/cli`
 
-Owns filesystem and terminal I/O. It creates datasets, parses files, invokes the core, captures an
-optional live model response, writes replay entries, emits reports and copies a demo artifact into
-the web app.
+Owns filesystem and terminal I/O. It creates datasets, parses files, invokes the core and emits
+reports. An explicit capture command can call one frozen model through an isolated adapter and write
+a separate self-hashed provenance envelope; it never mutates the committed replay automatically.
 
 ### `@vouch/web`
 
-A client-side evidence desk. It has no financial decision logic; it renders an artifact, supports a
-local JSON import, and exports a formula-safe review queue. The committed replay demo works offline.
+A client-side evidence desk. It has no financial decision logic; it validates source hashes and row
+identities, input summaries, references, equations, audit hashes, the recalculated run summary and
+artifact ID before projecting every recorded decision. A valid local import replaces the whole desk;
+an invalid import leaves the previous artifact untouched. It exports the current canonical JSON and
+a formula-safe review queue. The committed replay demo works offline.
 
 ## Reconciliation stages
 
@@ -78,3 +81,7 @@ Canonical JSON recursively sorts keys and rejects undefined values, non-finite n
 zero. Logical input hashes sort occurrence content hashes while preserving multiplicity, so shuffling
 rows does not change the artifact. A byte/file hash may exist in an upload receipt but never replaces
 the order-independent logical hash.
+
+The artifact ID is a self-hash, not a digital signature. Passing validation means the artifact is
+internally consistent; it does not authenticate who produced it. Model/runtime/cost/raw-response
+provenance stays outside `RunArtifact` so the financial decision artifact remains deterministic.

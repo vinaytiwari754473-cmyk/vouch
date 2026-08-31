@@ -45,11 +45,17 @@ pnpm generate      # regenerate the deterministic development dataset
 pnpm demo          # generate + reconcile + write the UI artifact
 pnpm eval          # compare baseline, deterministic and verified-AI modes
 pnpm benchmark     # 5 warmups + 30 measured sealed runs; separate provenance
+pnpm capture:ai --provider codex-cli --model gpt-5.6-sol  # explicit live provenance capture
 pnpm test          # adversarial and invariant tests
 pnpm typecheck     # strict TypeScript across the workspace
 pnpm build         # production web build
 pnpm check         # typecheck + tests + production build
 ```
+
+Live capture is never part of `pnpm demo` and never silently changes the committed replay. It
+writes the exact supplied prompt/schema, public-input hash, request hash, adapter/provider/model,
+response identifier, timing, token usage, hashed raw response and deterministic verifier verdicts to a
+separate reviewable envelope. See [docs/AI-CAPTURE.md](docs/AI-CAPTURE.md).
 
 ## Repository map
 

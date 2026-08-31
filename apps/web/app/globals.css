@@ -192,10 +192,26 @@ code { font-family: var(--mono); }
 .ai-marginalia { margin-top: 26px; padding: 17px 19px; border: 2px solid var(--blue); background: var(--blue-pale); box-shadow: 6px 6px 0 var(--blue); }
 .ai-marginalia > div { display: flex; justify-content: space-between; gap: 15px; color: var(--blue); font: 850 8px/1 var(--mono); letter-spacing: .09em; }
 .ai-marginalia blockquote { margin: 16px 0 11px; padding: 10px 13px; background: var(--sheet); border-left: 4px solid var(--blue); font: 500 11px/1.5 var(--mono); }
+.ai-marginalia blockquote small { display: block; margin-bottom: 8px; color: var(--muted); font: 800 7px/1 var(--mono); letter-spacing: .11em; }
 .ai-marginalia p { margin: 0; font-size: 11px; line-height: 1.55; }
+.ai-marginalia .ai-tests { display: grid; gap: 6px; margin-top: 14px; padding-top: 13px; border-top: 1px solid rgba(36,67,194,.25); color: var(--ink); }
+.ai-marginalia .ai-tests small { font: 650 8px/1.45 var(--mono); letter-spacing: 0; }
 .ai-rejected { border-color: var(--red); background: var(--red-pale); box-shadow-color: var(--red); }
 .ai-rejected > div { color: var(--red); }
 .ai-rejected blockquote { border-color: var(--red); }
+.ai-rejected .ai-tests { border-top-color: rgba(201,71,50,.25); }
+
+.loading-shell { min-height: 100vh; }
+.artifact-loader { width: min(880px, calc(100% - 40px)); min-height: calc(100vh - 67px); display: grid; align-content: center; justify-items: start; margin: 0 auto; padding: 70px 0; }
+.artifact-loader h1 { max-width: 780px; margin: 0; font: 500 clamp(48px,8vw,104px)/.9 var(--display); letter-spacing: -.065em; }
+.artifact-loader > p:not(.kicker) { max-width: 650px; margin: 28px 0 0; color: var(--muted); font: 550 13px/1.7 var(--mono); }
+.loader-line { width: min(590px,100%); height: 4px; margin-top: 38px; overflow: hidden; background: var(--line); }
+.loader-line::after { content: ''; display: block; width: 38%; height: 100%; background: linear-gradient(90deg, var(--blue), var(--acid)); animation: loader-scan 1.15s var(--ease-out) infinite alternate; }
+.loader-retry { width: min(380px,100%); margin: 38px 0 0; }
+.empty-artifact { min-height: 65vh; padding: clamp(40px,8vw,100px); }
+.empty-artifact h1 { max-width: 700px; margin: 0; font: 500 clamp(40px,6vw,76px)/.95 var(--display); letter-spacing: -.05em; }
+
+@keyframes loader-scan { from { transform: translateX(-100%); } to { transform: translateX(265%); } }
 
 .certificate { position: relative; padding: 34px clamp(22px,3vw,43px) 42px; background: #e9e5d9; overflow: hidden; }
 .certificate::before { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: repeating-linear-gradient(90deg, transparent 0, transparent 31px, rgba(21,23,19,.022) 32px); }

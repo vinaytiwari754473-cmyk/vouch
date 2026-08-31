@@ -42,4 +42,18 @@ describe("CLI options", () => {
     expect(() => parseCliOptions(["run", "--tolerance", "50"])).toThrow(CliUsageError);
     expect(() => parseCliOptions(["ship"])).toThrow(/unknown command/);
   });
+
+  it("keeps live capture explicit and separate from the offline demo", () => {
+    expect(parseCliOptions(["capture-ai", "--provider", "codex-cli", "--model", "gpt-5.6-sol"]))
+      .toMatchObject({
+        command: "capture-ai",
+        provider: "codex-cli",
+        model: "gpt-5.6-sol",
+        outputFile: "artifacts/ai-capture.json",
+        maxBudgetUsd: "0.50"
+      });
+    expect(() => parseCliOptions(["capture-ai", "--max-budget-usd", "free"])).toThrow(
+      /positive decimal/
+    );
+  });
 });

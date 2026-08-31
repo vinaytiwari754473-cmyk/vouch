@@ -1,3 +1,5 @@
+import { canonicalJson, sha256Hex } from "@vouch/core";
+
 import { readOptionalUtf8File } from "./files.js";
 import { parseJson, requireRecord } from "./json.js";
 
@@ -58,6 +60,25 @@ export function selectReplayHypotheses(
     ) {
       throw new TypeError(`replay cache entries[${index}] is malformed`);
     }
+    if ("request" in entry) {
+      const recomputedRequest = sha256Hex(canonicalJson(entry.request));
+      if (recomputedRequest !== entry.request_sha256) {
+        throw new TypeError(`replay cache entries[${index}] request SHA-256 does not match its request`);
+      }
+    }
+    if ("response_sha256" in entry) {
+      if (typeof entry.response_sha256 !== "string" || !SHA256.test(entry.response_sha256)) {
+        throw new TypeError(`replay cache entries[${index}] response SHA-256 is malformed`);
+      }
+      const recomputedResponse = sha256Hex(canonicalJson(entry.response));
+      if (recomputedResponse !== entry.response_sha256) {
+        throw new TypeError(`replay cache entries[${index}] response SHA-256 does not match its response`);
+      }
+    }
+    if ("capture_sha256" in entry &&
+      (typeof entry.capture_sha256 !== "string" || !SHA256.test(entry.capture_sha256))) {
+      throw new TypeError(`replay cache entries[${index}] capture SHA-256 is malformed`);
+    }
     if (seenRequests.has(entry.request_sha256)) {
       throw new TypeError(`duplicate replay request ${entry.request_sha256}`);
     }
@@ -78,5 +99,11 @@ export function selectReplayHypotheses(
   }
 
   matches.sort((left, right) => left.requestHash.localeCompare(right.requestHash));
-  return { status: "HIT", hypotheses: matches.map((item) => item.response), warnings: [] };
+  return {
+    status: "HIT",
+    hypotheses: matches.flatMap((item) =>
+      Array.isArray(item.response) ? item.response : [item.response]
+    ),
+    warnings: []
+  };
 }

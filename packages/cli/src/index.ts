@@ -39,6 +39,11 @@ export async function main(arguments_ = process.argv.slice(2)): Promise<void> {
       printResult(await executeReportCommand(options));
       return;
     }
+    if (options.command === "capture-ai") {
+      const { executeCaptureAiCommand } = await import("./commands/capture-ai.js");
+      printResult(await executeCaptureAiCommand(options));
+      return;
+    }
     throw new CliUsageError(`unhandled command ${options.command}`);
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
