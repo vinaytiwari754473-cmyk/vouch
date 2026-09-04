@@ -1,5 +1,7 @@
 # Vouch
 
+[![CI](https://github.com/vinaytiwari754473-cmyk/vouch/actions/workflows/ci.yml/badge.svg)](https://github.com/vinaytiwari754473-cmyk/vouch/actions/workflows/ci.yml)
+
 **AI proposes. Deterministic code proves. A settlement closes to the paise—or Vouch refuses to guess.**
 
 **Razorpay AI Buildathon · Track 4 — AI Finance Controller**
