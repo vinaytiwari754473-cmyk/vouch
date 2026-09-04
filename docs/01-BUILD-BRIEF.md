@@ -198,6 +198,11 @@ failure).
 
 ## 11. Calendar, gates, cut order
 
+> **Outcome note (2026-09-04):** This calendar records the original plan, not completed claims.
+> The held-out milestone was deferred because the one-shot harness was not completed before the
+> deadline. Vouch reports the committed synthetic development benchmark honestly and makes no
+> held-out or production-accuracy claim.
+
 - **Aug 25 eve**: repo init+push, workspace scaffold, money module + golden fee/tax test green.
 - **Aug 26**: schemas+fixtures, ingest, generator v1 (clean world + manifest).
 - **Aug 27**: grouping + conservation, exact-UTR matching, evidence assembly, CLI artifact.

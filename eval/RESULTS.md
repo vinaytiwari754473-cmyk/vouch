@@ -15,6 +15,10 @@ Status: **synthetic development benchmark; not held-out; not real merchant preva
 | Vouch deterministic | 9/24 | 9/9 | 0/9 | 9/11 | 13/15 |
 | Vouch + verified replay | 10/24 | 10/10 | 0/10 | 10/11 | 13/14 |
 
+For the hybrid `0/10` false-automatic observation, the two-sided Wilson 95% upper endpoint is
+`27.75%`. This wide interval reflects the small development sample; the result is evidence from
+this committed corpus, not a universal zero-risk claim.
+
 Hybrid ambiguity precision and recall are both `3/3`. Hybrid exception-instance precision is
 `20/25`; recall is `20/26`. Every accepted equation has an absolute residual of `0` paise. The
 hybrid run is complete: `1,083/1,083` physical source rows have a terminal outcome.
@@ -34,4 +38,3 @@ Some evidence situations produce both a planted root cause and a defensible down
 which lowers strict instance precision. The corpus is development data and must not be described as
 held-out. A future held-out freeze must be committed before its first hybrid evaluation and reported
 without re-rolling.
-

@@ -1,16 +1,42 @@
 # Vouch
 
-**AI proposes. The verifier proves. Every paise is explained—or honestly escalated.**
+**AI proposes. Deterministic code proves. A settlement closes to the paise—or Vouch refuses to guess.**
 
-Vouch is a three-source settlement verification agent for Razorpay merchants. It rebuilds every
-settlement from Razorpay Combined Recon rows, links the result to a bank credit, cross-checks every
-payment and refund against the merchant ledger, and emits an auditable proof certificate. If the
-evidence does not uniquely determine a result, Vouch abstains.
+**Razorpay AI Buildathon · Track 4 — AI Finance Controller**
 
-The key idea is intentionally narrow: reconciliation is not a chatbot problem. AI may propose a
-typed evidence hypothesis; deterministic code must independently verify that evidence, rebuild the
-global candidate graph, prove the chosen edge is forced across every maximum matching, and close the
-money equation at exactly zero paise.
+[Live product](https://vouch-settlement-proof.vvtt30691.chatgpt.site/) ·
+[Architecture](docs/ARCHITECTURE.md) · [Reproduce locally](#quick-start) ·
+[Evaluation methodology](eval/METRICS.md) · [Full results](eval/RESULTS.md)
+
+Vouch is a three-source settlement verifier for Razorpay merchants. Razorpay Combined Recon says
+what should have settled, the bank statement says what arrived, and the merchant ledger says what
+the business recorded. Vouch automatically verifies a settlement only when the evidence is globally
+unique, every required ledger check passes, and the equation closes at exactly `0` paise. Otherwise,
+it opens an explicit exception instead of guessing.
+
+### Committed synthetic development benchmark
+
+| Metric | Observed result |
+|---|---:|
+| Source-row completeness | `1,083/1,083` |
+| Settlement groups | `24` |
+| Automatic coverage | `10/24` |
+| Automatic verification precision | `10/10` |
+| False automatic verifications | `0/10` |
+| Unique-case recall | `10/11` |
+| Ambiguity precision / recall | `3/3` / `3/3` |
+| Accepted absolute residual | `0 paise` |
+| Local median throughput | `3,012.61 rows/second` |
+
+> These are results from the committed, deliberately fault-dense synthetic development benchmark
+> `vouch-dev-2026-08-v1`. They are not held-out or production accuracy. The observed `0/10` does
+> not mean zero future risk.
+
+[![Vouch settlement evidence desk](apps/web/public/og.png)](https://vouch-settlement-proof.vvtt30691.chatgpt.site/)
+
+AI is used only to propose typed hypotheses from unresolved text evidence. It cannot compute money
+or assign a verdict. Deterministic code verifies the cited source span, amount, currency and posting
+window, rebuilds the global candidate graph, proves uniqueness, and reruns the zero-paise equation.
 
 ## Why this is different
 
@@ -31,7 +57,8 @@ money equation at exactly zero paise.
 Requirements: Node.js 22.13+ and pnpm 11.
 
 ```bash
-pnpm install
+pnpm install --frozen-lockfile
+pnpm check
 pnpm demo
 pnpm dev
 ```
@@ -66,7 +93,6 @@ packages/eval/        Only package allowed to read truth; exact metric ratios an
 packages/cli/         File I/O and reproducible generate/run/report commands
 apps/web/             Client-side evidence desk; renders a run artifact
 data/dev/             Public development inputs and isolated truth manifest
-data/heldout/         Created once only after the evaluation freeze
 eval/                 Pre-registered metrics and leakage controls
 docs/                 Domain evidence, architecture, decisions, threat model and demo script
 ```
@@ -103,15 +129,16 @@ accuracy metrics.
 
 The development dataset is synthetic and deliberately fault-dense. Its aggregate score is a
 challenge score, not an estimate of real merchant prevalence. Metrics retain exact numerators and
-denominators. A displayed `0/N` false automatic verification result is accompanied by a Wilson 95%
-upper bound; it never claims universal safety.
+denominators. For the hybrid `0/10` false-automatic result, the two-sided Wilson 95% upper endpoint
+is `27.75%`; this finite observation is not a universal safety claim.
 
 Measured development results and limitations are reported in [eval/RESULTS.md](eval/RESULTS.md).
 The current hybrid run observes `10/10` correct automatic verifications, `0/10` false automatic
 verifications, `10/11` unique-case recall, and zero accepted residual paise.
 
-The official held-out run occurs only after the solver, generator distribution, prompt/schema,
-provider/model and evaluator are frozen together. Truth is structurally inaccessible to `core`.
+No held-out result is claimed. A future held-out run would occur only after the solver, generator
+distribution, prompt/schema, provider/model and evaluator are frozen together. Truth is
+structurally inaccessible to `core`.
 
 ## Demo route
 

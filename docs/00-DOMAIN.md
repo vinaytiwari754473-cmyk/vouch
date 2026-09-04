@@ -107,5 +107,6 @@ exists. **[V]** Never hard-code T+2. Consequences that shape the matcher:
 
 Test Mode is simulated — no real bank settlement proof exists or is claimed. All bank statements
 and batches are labelled **synthetic**; metrics are labelled synthetic-benchmark, never production
-accuracy or "merchant savings". The false-automatic-match rate is reported as measured on the
-frozen held-out set; zero is claimed only if measured zero.
+accuracy or "merchant savings". The current false-automatic-match rate is reported only for the
+committed synthetic development benchmark, with its exact denominator and confidence bound. No
+held-out result is claimed; a future held-out run must follow the pre-registered freeze protocol.

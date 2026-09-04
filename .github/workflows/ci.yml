@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.13.0
+          cache: pnpm
+
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Reproduce the sealed demo and evaluation
+        run: |
+          pnpm demo
+          pnpm eval
+          git diff --exit-code
+
+      - name: Typecheck, test and build
+        run: pnpm check
