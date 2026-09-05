@@ -1,5 +1,8 @@
 # Submission video — executable evidence, not a dashboard tour
 
+> Superseded after agent integration: use [VIDEO-RECORDING-SCRIPT.md](VIDEO-RECORDING-SCRIPT.md).
+> The text below is retained as the earlier Proof Lab-only recording plan.
+
 Target: 4:45–4:55 after rehearsal. Screen actions are not spoken. Use your face for the first
 20 seconds and the last 15 seconds; use a legible full-screen product view in between. Plain captions,
 clear sound, no loud music. Do not speed up a failing run or cut in a fabricated result.

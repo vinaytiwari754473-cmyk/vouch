@@ -40,6 +40,26 @@ AI is used only to propose typed hypotheses from unresolved text evidence. It ca
 or assign a verdict. Deterministic code verifies the cited source span, amount, currency and posting
 window, rebuilds the global candidate graph, proves uniqueness, and reruns the zero-paise equation.
 
+## Run the bounded investigation agent
+
+Open **Agent run** on the public product. **Replay recorded agent + reverify** loads the original
+proposals from a real integrated Codex call on September 5, then independently reruns the core on
+the raw synthetic sources. It is explicitly replay, not a live hosted model call.
+
+For a live run, start `pnpm dev` and, in a second terminal, `pnpm agent`, with Codex CLI installed
+and signed in using `codex login`. Open `http://localhost:3000` and choose **Run live agent**.
+One click reconciles the batch, selects unresolved evidence, calls the model once, verifies its
+literal citations and required checks, rematches globally, and produces proof and exception exports.
+The recorded run returned two proposals: one accepted and one rejected, moving from 9/24 to 10/24
+proved settlements (41.7% coverage), with all 1,083 rows accounted for and 25 exception records.
+The model call took 20.3 seconds; this is separate from core throughput. Live output may differ.
+
+The loopback-only companion uses your Codex allowance and accepts only the pinned public synthetic
+sample. It accepts no browser-supplied files, prompts, paths or model settings. It permits one active
+run, a 30-second cooldown and three calls per server session. Real uploaded merchant files remain
+in the separate AI-off browser workflow. The public site exposes no paid model endpoint.
+See [agent architecture, safety limits and recording steps](docs/AGENT-WORKFLOW.md).
+
 ## Challenge the proof in your browser
 
 Open **Proof Lab** on the live product. Reconcile the synthetic source rows, then change a bank

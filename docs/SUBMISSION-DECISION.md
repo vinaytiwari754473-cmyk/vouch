@@ -43,8 +43,13 @@ convenient green matches. Then show exactly the one case AI adds and why another
 
 ## Freeze after verification
 
+The earlier freeze recommendation was premature: the model capture command was separate from
+the interactive workflow. This gap is now addressed by the bounded local live agent and clearly
+labelled public replay, documented in [AGENT-WORKFLOW.md](AGENT-WORKFLOW.md). No claim is made
+that the public hosting environment runs fresh model inference or that all exceptions are resolved.
+
 Do not add more tracks, a chatbot, cosmetic redesign, live payment actions or a larger synthetic
-benchmark today. Record and rehearse [the final video script](DEMO-SCRIPT-FINAL.md). Check that the
+benchmark today. Record and rehearse [the final video script](VIDEO-RECORDING-SCRIPT.md). Check that the
 public repo, site, video link and architecture link open without your account. Check the official
 form's current requirements and deadline before final submission. A recorded video/application is
 still required; deploying this product does not submit the competition entry.

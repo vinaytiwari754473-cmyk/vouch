@@ -94,3 +94,5 @@ export type {
   SuggestedAction,
   TerminalState,
 } from "./types";
+export { agentDigest, assertAgentScope, verifyAgentSession } from './agent-session';
+export type { AgentSession, AgentStage } from './agent-session';

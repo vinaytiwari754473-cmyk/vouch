@@ -19,6 +19,7 @@
     "eval": "tsx packages/cli/src/index.ts eval",
     "benchmark": "tsx packages/cli/src/benchmark.ts",
     "capture:ai": "tsx packages/cli/src/index.ts capture-ai",
+    "agent": "tsx packages/cli/src/agent-server.ts",
     "check": "pnpm typecheck && pnpm test && pnpm build"
   },
   "devDependencies": {

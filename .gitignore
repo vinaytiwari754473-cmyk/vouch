@@ -12,4 +12,5 @@ data/heldout/private/
 *.tsbuildinfo
 data/dev/output/determinism-*
 artifacts/social-preview.png
+artifacts/local-agent/
 Thumbs.db

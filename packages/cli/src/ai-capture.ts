@@ -427,6 +427,12 @@ async function invokeCliProvider(
             "--ephemeral",
             "--ignore-user-config",
             "--ignore-rules",
+            "--disable", "shell_tool",
+            "--disable", "apply_patch_freeform",
+            "--disable", "multi_agent",
+            "--disable", "js_repl",
+            "--config", "web_search=\"disabled\"",
+            "--config", "forced_login_method=\"chatgpt\"",
             "--skip-git-repo-check",
             "--cd",
             directory,
@@ -744,6 +750,7 @@ function environmentWithoutProviderSecrets(provider: CaptureProvider): NodeJS.Pr
   const environment = { ...process.env };
   if (provider === "codex-cli") {
     delete environment.OPENAI_API_KEY;
+    delete environment.CODEX_API_KEY;
     delete environment.ANTHROPIC_API_KEY;
   } else if (provider === "claude-cli") {
     // Claude subscription/keychain auth must not be shadowed by an invalid shell key.

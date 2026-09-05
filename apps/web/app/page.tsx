@@ -3,6 +3,7 @@
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import type { RunArtifact } from '@vouch/core';
 import { Workbench } from './workbench';
+import { AgentWorkbench } from './agent-workbench';
 import {
   type ArtifactProjection,
   evaluationRows,
@@ -12,7 +13,7 @@ import {
   type SettlementCase,
 } from './artifact-data';
 
-type View = 'workbench' | 'evidence' | 'exceptions' | 'evaluation';
+type View = 'agent' | 'workbench' | 'evidence' | 'exceptions' | 'evaluation';
 type CaseFilter = 'ALL' | 'PROVED' | 'OPEN';
 
 const statusOrder: Record<CaseStatus, number> = {
@@ -238,7 +239,7 @@ function EvaluationView() {
 }
 
 export default function Home() {
-  const [view, setView] = useState<View>('workbench');
+  const [view, setView] = useState<View>('agent');
   const [projection, setProjection] = useState<ArtifactProjection | null>(null);
   const [selectedId, setSelectedId] = useState('');
   const [filter, setFilter] = useState<CaseFilter>('ALL');
@@ -380,6 +381,7 @@ export default function Home() {
       <header className="masthead">
         <button className="wordmark" onClick={() => setView('evidence')} type="button" aria-label="Open Vouch evidence desk"><span>VOUCH</span><sup>01</sup></button>
         <nav className="primary-nav" aria-label="Product views">
+          <button className={view === 'agent' ? 'active' : ''} aria-current={view === 'agent' ? 'page' : undefined} onClick={() => setView('agent')} type="button">Agent run</button>
           <button className={view === 'workbench' ? 'active' : ''} aria-current={view === 'workbench' ? 'page' : undefined} onClick={() => setView('workbench')} type="button">Proof Lab</button>
           <button className={view === 'evidence' ? 'active' : ''} aria-current={view === 'evidence' ? 'page' : undefined} onClick={() => setView('evidence')} type="button">Evidence desk</button>
           <button className={view === 'exceptions' ? 'active' : ''} aria-current={view === 'exceptions' ? 'page' : undefined} onClick={() => setView('exceptions')} type="button">Review <b>{batch.reviewCases}</b></button>
@@ -417,6 +419,8 @@ export default function Home() {
       ) : null}
 
       <div hidden={view !== 'workbench'}><Workbench demo={originalDemo.current ?? projection.artifact} onResult={(next, caseId) => { setProjection(next); setSelectedId(caseId ?? next.cases[0]?.id ?? ''); setQuery(''); setFilter('ALL'); setNotice(`INTERNALLY CONSISTENT · FRESH SOURCE RUN · ${next.batch.inputRows} ROWS`); }} onInspect={() => setView('evidence')} onRecorded={() => { void retryLoad().then(() => setView('evidence')); }} /></div>
+
+      <div hidden={view !== 'agent'}><AgentWorkbench active={view === 'agent'} demo={originalDemo.current ?? projection.artifact} onResult={(next) => { setProjection(next); setSelectedId(next.cases[0]?.id ?? ''); setQuery(''); setFilter('ALL'); setNotice(`AGENT ${next.artifact.config.aiMode.toUpperCase()} · CODE-VERIFIED · ${next.batch.inputRows} ROWS`); }} onInspect={() => setView('evidence')} onLab={() => setView('workbench')} /></div>
 
       {view === 'evidence' ? (
         <div className="desk-layout">
