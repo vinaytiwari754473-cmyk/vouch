@@ -7,9 +7,9 @@
   ],
   "publicInputBundleSha256": "7070d07f2bd54f40ae377470f12005c0dc30c5d51805e6c5671144d2a2b761ad",
   "artifacts": {
-    "baseline": "run_4c6718598ade27f29732cebd",
-    "deterministic": "run_8446f013df19add1b5865b34",
-    "hybrid": "run_ecc51b18dd36af843a2fdfd2"
+    "baseline": "run_e8b9040c7d1a4bcfe8f63401",
+    "deterministic": "run_899b0c2ee57a67f252d37bd2",
+    "hybrid": "run_eb5706d017fb9e79e9749f29"
   },
   "scores": {
     "baseline": {
@@ -41,9 +41,9 @@
         "value": 0.2916666666666667
       },
       "safeAbstentionPrecision": {
-        "numerator": 13,
-        "denominator": 17,
-        "value": 0.7647058823529411
+        "numerator": 11,
+        "denominator": 15,
+        "value": 0.7333333333333333
       },
       "falseAbstentionRate": {
         "numerator": 4,
@@ -61,29 +61,29 @@
         "value": 0.3333333333333333
       },
       "missingBankPrecision": {
-        "numerator": 5,
-        "denominator": 16,
-        "value": 0.3125
+        "numerator": 3,
+        "denominator": 14,
+        "value": 0.21428571428571427
       },
       "missingBankRecall": {
-        "numerator": 5,
+        "numerator": 3,
         "denominator": 5,
-        "value": 1
+        "value": 0.6
       },
       "falseAutomaticVerificationWilsonUpper95": 0.3543304350666874,
       "exceptions": {
-        "truePositiveCount": 17,
-        "falsePositiveCount": 15,
-        "falseNegativeCount": 9,
+        "truePositiveCount": 15,
+        "falsePositiveCount": 17,
+        "falseNegativeCount": 11,
         "precision": {
-          "numerator": 17,
+          "numerator": 15,
           "denominator": 32,
-          "value": 0.53125
+          "value": 0.46875
         },
         "recall": {
-          "numerator": 17,
+          "numerator": 15,
           "denominator": 26,
-          "value": 0.6538461538461539
+          "value": 0.5769230769230769
         },
         "byCategory": [
           {
@@ -185,12 +185,12 @@
           {
             "category": "INSUFFICIENT_EVIDENCE",
             "truePositiveCount": 0,
-            "falsePositiveCount": 0,
+            "falsePositiveCount": 2,
             "falseNegativeCount": 1,
             "precision": {
               "numerator": 0,
-              "denominator": 0,
-              "value": null
+              "denominator": 2,
+              "value": 0
             },
             "recall": {
               "numerator": 0,
@@ -232,18 +232,18 @@
           },
           {
             "category": "MISSING_BANK_ENTRY",
-            "truePositiveCount": 5,
+            "truePositiveCount": 3,
             "falsePositiveCount": 5,
-            "falseNegativeCount": 0,
+            "falseNegativeCount": 2,
             "precision": {
-              "numerator": 5,
-              "denominator": 10,
-              "value": 0.5
+              "numerator": 3,
+              "denominator": 8,
+              "value": 0.375
             },
             "recall": {
-              "numerator": 5,
+              "numerator": 3,
               "denominator": 5,
-              "value": 1
+              "value": 0.6
             }
           },
           {
@@ -332,7 +332,7 @@
         "acceptedAbsoluteResidualPaise": "0",
         "shortCreditPaise": "51",
         "excessCreditPaise": "75",
-        "missingSettlementPaise": "56633690",
+        "missingSettlementPaise": "44000956",
         "unknownBankCreditPaise": "34124130"
       },
       "truthMoney": {
@@ -373,11 +373,11 @@
         {
           "settlementId": "setl_564nq77z4v27gf",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_7htrgwjj4mavxy",
@@ -409,11 +409,11 @@
         {
           "settlementId": "setl_9dunje203qiduc",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_bju3s4t9wqnvo0",
@@ -590,9 +590,9 @@
         "value": 0.375
       },
       "safeAbstentionPrecision": {
-        "numerator": 13,
-        "denominator": 15,
-        "value": 0.8666666666666667
+        "numerator": 11,
+        "denominator": 13,
+        "value": 0.8461538461538461
       },
       "falseAbstentionRate": {
         "numerator": 2,
@@ -610,29 +610,29 @@
         "value": 1
       },
       "missingBankPrecision": {
-        "numerator": 5,
-        "denominator": 12,
-        "value": 0.4166666666666667
+        "numerator": 3,
+        "denominator": 10,
+        "value": 0.3
       },
       "missingBankRecall": {
-        "numerator": 5,
+        "numerator": 3,
         "denominator": 5,
-        "value": 1
+        "value": 0.6
       },
       "falseAutomaticVerificationWilsonUpper95": 0.2991450484195441,
       "exceptions": {
-        "truePositiveCount": 19,
-        "falsePositiveCount": 7,
-        "falseNegativeCount": 7,
+        "truePositiveCount": 17,
+        "falsePositiveCount": 9,
+        "falseNegativeCount": 9,
         "precision": {
-          "numerator": 19,
+          "numerator": 17,
           "denominator": 26,
-          "value": 0.7307692307692307
+          "value": 0.6538461538461539
         },
         "recall": {
-          "numerator": 19,
+          "numerator": 17,
           "denominator": 26,
-          "value": 0.7307692307692307
+          "value": 0.6538461538461539
         },
         "byCategory": [
           {
@@ -734,12 +734,12 @@
           {
             "category": "INSUFFICIENT_EVIDENCE",
             "truePositiveCount": 0,
-            "falsePositiveCount": 0,
+            "falsePositiveCount": 2,
             "falseNegativeCount": 1,
             "precision": {
               "numerator": 0,
-              "denominator": 0,
-              "value": null
+              "denominator": 2,
+              "value": 0
             },
             "recall": {
               "numerator": 0,
@@ -781,18 +781,18 @@
           },
           {
             "category": "MISSING_BANK_ENTRY",
-            "truePositiveCount": 5,
+            "truePositiveCount": 3,
             "falsePositiveCount": 1,
-            "falseNegativeCount": 0,
+            "falseNegativeCount": 2,
             "precision": {
-              "numerator": 5,
-              "denominator": 6,
-              "value": 0.8333333333333334
+              "numerator": 3,
+              "denominator": 4,
+              "value": 0.75
             },
             "recall": {
-              "numerator": 5,
+              "numerator": 3,
               "denominator": 5,
-              "value": 1
+              "value": 0.6
             }
           },
           {
@@ -881,7 +881,7 @@
         "acceptedAbsoluteResidualPaise": "0",
         "shortCreditPaise": "51",
         "excessCreditPaise": "75",
-        "missingSettlementPaise": "35236287",
+        "missingSettlementPaise": "22603553",
         "unknownBankCreditPaise": "12726727"
       },
       "truthMoney": {
@@ -922,11 +922,11 @@
         {
           "settlementId": "setl_564nq77z4v27gf",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_7htrgwjj4mavxy",
@@ -958,11 +958,11 @@
         {
           "settlementId": "setl_9dunje203qiduc",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_bju3s4t9wqnvo0",
@@ -1139,9 +1139,9 @@
         "value": 0.4166666666666667
       },
       "safeAbstentionPrecision": {
-        "numerator": 13,
-        "denominator": 14,
-        "value": 0.9285714285714286
+        "numerator": 11,
+        "denominator": 12,
+        "value": 0.9166666666666666
       },
       "falseAbstentionRate": {
         "numerator": 1,
@@ -1159,29 +1159,29 @@
         "value": 1
       },
       "missingBankPrecision": {
-        "numerator": 5,
-        "denominator": 11,
-        "value": 0.45454545454545453
+        "numerator": 3,
+        "denominator": 9,
+        "value": 0.3333333333333333
       },
       "missingBankRecall": {
-        "numerator": 5,
+        "numerator": 3,
         "denominator": 5,
-        "value": 1
+        "value": 0.6
       },
       "falseAutomaticVerificationWilsonUpper95": 0.2775327998628892,
       "exceptions": {
-        "truePositiveCount": 20,
-        "falsePositiveCount": 5,
-        "falseNegativeCount": 6,
+        "truePositiveCount": 18,
+        "falsePositiveCount": 7,
+        "falseNegativeCount": 8,
         "precision": {
-          "numerator": 20,
+          "numerator": 18,
           "denominator": 25,
-          "value": 0.8
+          "value": 0.72
         },
         "recall": {
-          "numerator": 20,
+          "numerator": 18,
           "denominator": 26,
-          "value": 0.7692307692307693
+          "value": 0.6923076923076923
         },
         "byCategory": [
           {
@@ -1283,12 +1283,12 @@
           {
             "category": "INSUFFICIENT_EVIDENCE",
             "truePositiveCount": 0,
-            "falsePositiveCount": 0,
+            "falsePositiveCount": 2,
             "falseNegativeCount": 1,
             "precision": {
               "numerator": 0,
-              "denominator": 0,
-              "value": null
+              "denominator": 2,
+              "value": 0
             },
             "recall": {
               "numerator": 0,
@@ -1330,18 +1330,18 @@
           },
           {
             "category": "MISSING_BANK_ENTRY",
-            "truePositiveCount": 5,
+            "truePositiveCount": 3,
             "falsePositiveCount": 0,
-            "falseNegativeCount": 0,
+            "falseNegativeCount": 2,
             "precision": {
-              "numerator": 5,
-              "denominator": 5,
+              "numerator": 3,
+              "denominator": 3,
               "value": 1
             },
             "recall": {
-              "numerator": 5,
+              "numerator": 3,
               "denominator": 5,
-              "value": 1
+              "value": 0.6
             }
           },
           {
@@ -1430,7 +1430,7 @@
         "acceptedAbsoluteResidualPaise": "0",
         "shortCreditPaise": "51",
         "excessCreditPaise": "75",
-        "missingSettlementPaise": "29987086",
+        "missingSettlementPaise": "17354352",
         "unknownBankCreditPaise": "7477526"
       },
       "truthMoney": {
@@ -1471,11 +1471,11 @@
         {
           "settlementId": "setl_564nq77z4v27gf",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_7htrgwjj4mavxy",
@@ -1507,11 +1507,11 @@
         {
           "settlementId": "setl_9dunje203qiduc",
           "evidenceClass": "ABSENT",
-          "predictedStatus": "UNMATCHED",
+          "predictedStatus": "INVALID_INPUT",
           "automatic": false,
           "correctAutomatic": false,
           "falseAutomatic": false,
-          "deferred": true
+          "deferred": false
         },
         {
           "settlementId": "setl_bju3s4t9wqnvo0",

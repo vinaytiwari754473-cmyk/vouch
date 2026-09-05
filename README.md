@@ -28,7 +28,7 @@ it opens an explicit exception instead of guessing.
 | Unique-case recall | `10/11` |
 | Ambiguity precision / recall | `3/3` / `3/3` |
 | Accepted absolute residual | `0 paise` |
-| Local median throughput | `3,012.61 rows/second` |
+| Local median throughput | `15,127.78 rows/second` |
 
 > These are results from the committed, deliberately fault-dense synthetic development benchmark
 > `vouch-dev-2026-08-v1`. They are not held-out or production accuracy. The observed `0/10` does
@@ -40,7 +40,21 @@ AI is used only to propose typed hypotheses from unresolved text evidence. It ca
 or assign a verdict. Deterministic code verifies the cited source span, amount, currency and posting
 window, rebuilds the global candidate graph, proves uniqueness, and reruns the zero-paise equation.
 
-## Why this is different
+## Challenge the proof in your browser
+
+Open **Proof Lab** on the live product. Reconcile the synthetic source rows, then change a bank
+credit by ₹5,000 or one paise, remove a merchant record, or introduce a competing bank credit.
+Every action reruns the actual deterministic core in a Web Worker. Restoring the original source
+reproduces the identical baseline artifact. These are controlled synthetic experiments, not
+recovered money or held-out evaluation.
+
+You can also choose three source files: Razorpay JSON (`items[]`, integer paise), bank CSV, and
+merchant CSV (rupee amounts). Download a sample beside each field. Browser runs are local, AI-off,
+INR-only, and limited to 5 MiB/file, 5,000 total rows, 250 settlements and 15 seconds. No file is
+uploaded to a server by this flow. Use the CLI for larger batches. An invalid run leaves the prior
+result intact. The recorded hybrid demo remains separately available for inspecting pinned AI evidence.
+
+## Engineering choices
 
 - **Three witnesses:** merchant books, Razorpay recon and the bank must agree before the overall
   state can be `VERIFIED`.
@@ -71,7 +85,7 @@ Useful commands:
 
 ```bash
 pnpm generate      # regenerate the deterministic development dataset
-pnpm demo          # generate + reconcile + write the UI artifact
+pnpm demo          # reconcile committed sources + write artifact/report
 pnpm eval          # compare baseline, deterministic and verified-AI modes
 pnpm benchmark     # 5 warmups + 30 measured sealed runs; separate provenance
 pnpm capture:ai --provider codex-cli --model gpt-5.6-sol  # explicit live provenance capture
@@ -93,7 +107,7 @@ packages/core/        Pure reconciliation engine; no I/O, network, clock or trut
 packages/generator/   Seeded synthetic merchant world and independent corruption layer
 packages/eval/        Only package allowed to read truth; exact metric ratios and benchmarks
 packages/cli/         File I/O and reproducible generate/run/report commands
-apps/web/             Client-side evidence desk; renders a run artifact
+apps/web/             Local source reconciliation, Proof Lab and artifact-driven evidence desk
 data/dev/             Public development inputs and isolated truth manifest
 eval/                 Pre-registered metrics and leakage controls
 docs/                 Domain evidence, architecture, decisions, threat model and demo script
@@ -144,9 +158,9 @@ structurally inaccessible to `core`.
 
 ## Demo route
 
-The five-minute judge flow is scripted in [docs/DEMO-SCRIPT.md](docs/DEMO-SCRIPT.md): golden
-fee/tax proof, ₹0.50 short credit, globally ambiguous matching, verified AI narration span, prompt
-injection rejection, then the pre-registered evaluation comparison.
+The five-minute judge flow is scripted in [docs/DEMO-SCRIPT-FINAL.md](docs/DEMO-SCRIPT-FINAL.md): reconstruct a
+proof, change its source evidence live, show honest abstention, inspect verified and rejected AI
+proposals, then report the development evaluation with its limitations.
 
 The AI-assisted build process is documented in [docs/METHODOLOGY.md](docs/METHODOLOGY.md), and
 first-person panel practice lives in [docs/QUESTIONS.md](docs/QUESTIONS.md).

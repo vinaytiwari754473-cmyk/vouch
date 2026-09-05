@@ -1,3 +1,5 @@
+export { CsvError, parseCsv, parseCsvObjects, escapeSpreadsheetFormula, encodeCsvCell, stringifyCsv } from './csv';
+export type { ParsedCsv } from './csv';
 export {
   applyManualResolution,
   assertRunArtifactInvariants,

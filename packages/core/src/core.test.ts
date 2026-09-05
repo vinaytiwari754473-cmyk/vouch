@@ -3,15 +3,18 @@ import {
   applyManualResolution,
   analyzeMatching,
   canonicalArtifactJson,
+  canonicalJson,
   canonicalDecisionJson,
   epochToISTDate,
   parseRupeesToPaise,
   runVouch,
   sha256Hex,
+  validateRunArtifactJson,
   type AiHypothesis,
   type JsonObject,
   type RunConfig,
   type RunInput,
+  type RunArtifact,
 } from "./index";
 
 const SETTLED_AT = Math.floor(Date.parse("2026-08-25T06:00:00.000Z") / 1000);
@@ -162,6 +165,138 @@ function goldenInput(): RunInput {
     settlementEntities: [{ settlement_id: "setl_gold", amount: 389_852, currency: "INR" }],
   };
 }
+
+describe('rejected source evidence cannot disappear from a related proof', () => {
+  it.each(['recon member', 'bank identity', 'merchant identity', 'settlement entity'])(
+    'withholds closure for a malformed %s while retaining every occurrence', (kind) => {
+      const original = singlePaymentInput();
+      const bad: RunInput = kind === 'recon member'
+        ? { ...original, reconRows: [...original.reconRows, { ...original.reconRows[0], entity_id: 'bad_member', credit: 'bad' }] }
+        : kind === 'bank identity'
+          ? { ...original, bankRows: [...original.bankRows, { ...original.bankRows[0], bank_row_ref: 'another_bank', amount: 'bad' }] }
+          : kind === 'merchant identity'
+            ? { ...original, merchantRows: [...original.merchantRows, { ...original.merchantRows[0], record_id: 'another_ledger', expected_amount: 'bad' }] }
+            : { ...original, settlementEntities: [{ settlement_id: 'setl_one', amount: 'bad', currency: 'INR' }] };
+      const run = runVouch(bad, config);
+      expect(run.settlements[0]?.overallStatus).toBe('INVALID_INPUT');
+      expect(run.summary.exactMatches).toBe(0);
+      expect(run.summary.complete).toBe(true);
+      expect(run.rowOutcomes).toHaveLength(run.summary.inputRows);
+      expect(run.exceptions.some((item) => item.message.includes('rejected or conflicting'))).toBe(true);
+    },
+  );
+
+  it('quarantines a valid bank record whose malformed duplicate has no reference', () => {
+    const original = singlePaymentInput();
+    const run = runVouch({ ...original, bankRows: [...original.bankRows, { ...original.bankRows[0], amount: 'bad', utr: null }] }, config);
+    expect(run.summary.exactMatches).toBe(0);
+    expect(run.bankEntries[0]?.bankStatus).toBe('INVALID');
+    expect(run.summary.complete).toBe(true);
+  });
+
+  it('keeps an unrelated malformed record visible without poisoning an independent settlement', () => {
+    const original = singlePaymentInput();
+    const input = { ...original, merchantRows: [...original.merchantRows, { ...original.merchantRows[0], record_id: 'unrelated', entity_ref: 'unrelated', payment_ref: null, order_ref: null, expected_amount: 'bad' }] };
+    const run = runVouch(input, config);
+    expect(run.settlements[0]?.overallStatus).toBe('EXACT_MATCH');
+    expect(run.rowOutcomes.some((row) => row.overallStatus === 'INVALID_INPUT')).toBe(true);
+    expect(run.summary.complete).toBe(true);
+    expect(canonicalArtifactJson(runVouch({ ...input, merchantRows: [...input.merchantRows].reverse() }, config))).toBe(canonicalArtifactJson(run));
+  });
+
+  it('does not replace a contradictory direct merchant identity with an order reference', () => {
+    const original = singlePaymentInput();
+    const run = runVouch({ ...original, merchantRows: [{ ...original.merchantRows[0], entity_ref: 'some_other_payment', payment_ref: null }] }, config);
+    expect(run.summary.exactMatches).toBe(0);
+    expect(run.settlements[0]?.ledgerStatus).toBe('MISSING_MERCHANT_RECORD');
+  });
+
+  it('rejects contradictory entity and payment references', () => {
+    const original = singlePaymentInput();
+    const run = runVouch({ ...original, merchantRows: [{ ...original.merchantRows[0], payment_ref: 'some_other_payment' }] }, config);
+    expect(run.settlements[0]?.ledgerStatus).toBe('AMBIGUOUS_REFERENCE');
+    expect(run.summary.exactMatches).toBe(0);
+  });
+
+  it.each([{ on_hold: true }, { settled: false }])('withholds an explicitly held or unsettled group: %s', (flags) => {
+    const original = singlePaymentInput();
+    const run = runVouch({ ...original, reconRows: [{ ...original.reconRows[0], ...flags }] }, { ...config, inputProfile: 'foreign' });
+    expect(run.settlements[0]?.overallStatus).toBe('INVALID_INPUT');
+  });
+});
+
+describe('additional rejected-evidence boundaries', () => {
+  it.each([{ utr: '000000000001' }, { utr: null, narration: 'Razorpay UTR000000000001' }])('quarantines malformed bank evidence with transformed references: %s', (reference) => {
+    const input = singlePaymentInput();
+    const artifact = runVouch({ ...input, bankRows: [...input.bankRows, { ...input.bankRows[0], bank_row_ref: 'bad_bank', amount: 'bad', ...reference }] }, config);
+    expect(artifact.summary.exactMatches).toBe(0);
+    expect(artifact.settlements[0]?.overallStatus).toBe('INVALID_INPUT');
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+  });
+  it('retains verbatim stable IDs when linking malformed bank siblings', () => {
+    const input = singlePaymentInput();
+    const bank = { ...input.bankRows[0], bank_row_ref: ' bank_one ' };
+    const artifact = runVouch({ ...input, bankRows: [bank, { ...bank, amount: 'bad', utr: null }] }, config);
+    expect(artifact.summary.exactMatches).toBe(0);
+    expect(artifact.bankEntries[0]?.bankStatus).toBe('INVALID');
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+  });
+  it('rejects contradictory refund parent-payment identities', () => {
+    const input = goldenInput();
+    const artifact = runVouch({ ...input, merchantRows: input.merchantRows.map((row) => row.type === 'refund' ? { ...row, payment_ref: 'pay_OTHER' } : row) }, config);
+    expect(artifact.summary.exactMatches).toBe(0);
+    expect(artifact.ledger.find((item) => item.recordId === 'ledger_rfnd_gold')?.ledgerStatus).toBe('AMBIGUOUS_REFERENCE');
+  });
+});
+
+function narrationHypothesis(input: RunInput, text: string, candidateIds: readonly string[] = ['setl_one'], id = 'hyp_one'): AiHypothesis {
+  const preliminary = runVouch(input, config);
+  const bankRowId = preliminary.sourceRows.find((row) => row.source === 'BANK')?.rowId;
+  const narration = input.bankRows[0]?.narration;
+  if (!bankRowId || typeof narration !== 'string') throw new Error('bank fixture invariant');
+  const start = narration.indexOf(text);
+  return { schema_version: '1', hypothesis_id: id, subject_bank_entry_id: 'bank_one', hypothesis_type: 'UTR_FORMAT_VARIANT', candidate_ids: candidateIds, evidence_row_ids: [bankRowId], confidence: 0.8, requested_tests: ['NORMALIZED_UTR_MATCH', 'EXACT_AMOUNT_MATCH', 'POSTING_WINDOW_MATCH', 'LEDGER_PRESENCE_CHECK'], literal_spans: [{ evidence_row_id: bankRowId, field: 'narration', start, end: start + text.length, text }] };
+}
+
+describe('AI verdicts survive artifact validation', () => {
+  const hybridConfig: Partial<RunConfig> = { ...config, mode: 'hybrid', aiMode: 'replay' };
+  it('retains two verified candidates from one proposal and abstains globally', () => {
+    const original = singlePaymentInput({ utr: 'AAAA1234567890', bankUtr: null, narration: 'Reference tail 1234567890' });
+    const input: RunInput = { ...original, reconRows: [...original.reconRows, paymentRow({ entityId: 'pay_two', settlementId: 'setl_two', utr: 'BBBB1234567890' })], merchantRows: [...original.merchantRows, merchantPayment('pay_two')], settlementEntities: [...(original.settlementEntities ?? []), { settlement_id: 'setl_two', amount: 9764, currency: 'INR' }] };
+    const artifact = runVouch(input, hybridConfig, [narrationHypothesis(input, '1234567890', ['setl_one', 'setl_two'])]);
+    expect(artifact.hypotheses).toHaveLength(2);
+    expect(artifact.hypotheses.every((item) => item.status === 'VERIFIED')).toBe(true);
+    expect(artifact.candidateEdges).toHaveLength(2);
+    expect(artifact.settlements.every((item) => item.overallStatus === 'AMBIGUOUS')).toBe(true);
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+  });
+  it('accepts deterministic and AI evidence merged onto the same pair', () => {
+    const input = singlePaymentInput({ bankUtr: null, narration: 'Reference UTR000000000001' });
+    const artifact = runVouch(input, hybridConfig, [narrationHypothesis(input, 'UTR000000000001')]);
+    expect(artifact.candidateEdges[0]?.evidence).toEqual(['AI_HYPOTHESIS', 'NARRATION_TOKEN']);
+    expect(artifact.settlements[0]?.overallStatus).toBe('EXACT_MATCH');
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+  });
+  it('accepts two verified hypotheses merged onto one pair', () => {
+    const input = singlePaymentInput({ utr: 'PREFIXGOOD1234567890', bankUtr: null, narration: 'Reference tail GOOD1234567890' });
+    const first = narrationHypothesis(input, 'GOOD1234567890');
+    const artifact = runVouch(input, hybridConfig, [first, { ...first, hypothesis_id: 'hyp_two' }]);
+    expect(artifact.candidateEdges).toHaveLength(1);
+    expect(artifact.candidateEdges[0]?.hypothesisIds).toEqual(['hyp_one', 'hyp_two']);
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+  });
+  it('rejects a rehashed edge claiming support from a rejected hypothesis', () => {
+    const input = singlePaymentInput({ utr: 'PREFIXGOOD1234567890', bankUtr: null, narration: 'Reference tail GOOD1234567890' });
+    const accepted = narrationHypothesis(input, 'GOOD1234567890');
+    const rejected: AiHypothesis = { ...accepted, hypothesis_id: 'hyp_rejected', hypothesis_type: 'INSUFFICIENT_EVIDENCE' };
+    const artifact = runVouch(input, hybridConfig, [accepted, rejected]);
+    expect(artifact.hypotheses.find((item) => item.hypothesisId === 'hyp_rejected')?.status).toBe('REJECTED');
+    expect(validateRunArtifactJson(canonicalArtifactJson(artifact))).toEqual(artifact);
+    const { artifactId: _id, ...body } = { ...artifact, candidateEdges: artifact.candidateEdges.map((edge) => ({ ...edge, hypothesisIds: [...edge.hypothesisIds, 'hyp_rejected'] })) };
+    const forged: RunArtifact = { ...body, artifactId: `run_${sha256Hex(canonicalJson(body)).slice(0, 24)}` };
+    expect(() => validateRunArtifactJson(canonicalJson(forged))).toThrow(/hypothes|verified/i);
+  });
+});
 
 describe("money and domain invariants", () => {
   it("parses Indian grouping exactly and rejects malformed precision", () => {

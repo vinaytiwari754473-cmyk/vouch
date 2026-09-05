@@ -57,7 +57,14 @@ a separate self-hashed provenance envelope; it never mutates the committed repla
 
 ### `@vouch/web`
 
-A client-side evidence desk. It has no financial decision logic; it validates source hashes and row
+A client-side evidence desk and executable Proof Lab. Financial decisions still live only in
+`@vouch/core`: the browser invokes that same engine in a disposable Web Worker for raw source files
+or explicit synthetic source edits. It never patches decision statuses. Runs are deterministic/AI-off,
+limited to 5,000 total rows and 250 settlements, with a 15-second worker timeout. Original sample
+evidence is cloned, not mutated; changed sources never reuse a pinned AI response. Source files remain
+in browser memory and are not uploaded by this flow. There is no persistence or direct bank connection.
+
+Before displaying any result, the desk validates source hashes and row
 identities, input summaries, references, equations, audit hashes, the recalculated run summary and
 artifact ID before projecting every recorded decision. A valid local import replaces the whole desk;
 an invalid import leaves the previous artifact untouched. It exports the current canonical JSON and
@@ -65,7 +72,10 @@ a formula-safe review queue. The committed replay demo works offline.
 
 ## Reconciliation stages
 
-1. Validate each physical occurrence independently. Invalid rows receive a terminal outcome.
+1. Validate each physical occurrence independently. Invalid rows receive a terminal outcome. A
+   rejected row's stable IDs and allowlisted reference evidence also quarantine related accepted
+   records; invalid evidence must not disappear from a related proof. Explicit hold/unsettled flags
+   and contradictory merchant references withhold automatic closure.
 2. Group recon rows by non-null settlement ID and sum checked `credit − debit` contributions.
 3. Quarantine exact-UTR amount discrepancies; commit exact pairs only when both sides are one-to-one.
 4. Build deterministic fallback edges from exact money/currency/date and allowlisted reference evidence.

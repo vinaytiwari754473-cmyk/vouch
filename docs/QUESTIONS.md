@@ -67,8 +67,9 @@ or non-unique evidence is designed to abstain instead of being made green by a m
 
 The benchmark scores strict planted exception instances. Vouch can emit a root cause and a valid
 downstream consequence—for example duplicate evidence can also create a UTR conflict—while the
-truth manifest may plant only one category. Hybrid currently scores 20/25 instance precision and
-20/26 recall. I report that honestly instead of hiding the taxonomy mismatch.
+truth manifest may plant only one category. Hybrid currently scores 18/25 instance precision and
+18/26 recall after the invalid-source quarantine correction. I report that honestly instead of
+hiding the taxonomy mismatch. See eval/RESULTS.md for the before/after explanation.
 
 ## “What happens with no API key or an outage?”
 
@@ -88,4 +89,3 @@ accuracy.
 I learned that the strongest AI product is not always the one giving AI the final answer. Here the
 valuable design is a narrow AI role surrounded by evidence, exact arithmetic, abstention, and an
 audit trail. I can explain and run the full path even though AI tools accelerated the build.
-

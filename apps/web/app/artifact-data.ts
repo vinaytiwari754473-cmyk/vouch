@@ -8,7 +8,7 @@ import {
   type SettlementDecision,
 } from '@vouch/core';
 
-export const SEALED_DEMO_ARTIFACT_ID = 'run_ecc51b18dd36af843a2fdfd2';
+export const SEALED_DEMO_ARTIFACT_ID = 'run_eb5706d017fb9e79e9749f29';
 
 export type CaseStatus =
   | 'PROVED'
@@ -26,7 +26,7 @@ export type DisplayEvidenceRow = {
   feePaise: number;
   taxPaise: number;
   contributionPaise: number;
-  merchant: 'VERIFIED' | 'MISSING' | 'MISMATCH';
+  merchant: 'VERIFIED' | 'MISSING' | 'MISMATCH' | 'NOT_REQUIRED';
 };
 
 export type DisplayAuditEvent = {
@@ -40,8 +40,8 @@ export type SettlementCase = {
   id: string;
   shortId: string;
   status: CaseStatus;
-  bankStatus: 'EXACT' | 'ASSISTED' | 'DISCREPANCY' | 'AMBIGUOUS' | 'MISSING';
-  ledgerStatus: 'VERIFIED' | 'MISSING' | 'MISMATCH';
+  bankStatus: 'EXACT' | 'ASSISTED' | 'DISCREPANCY' | 'AMBIGUOUS' | 'MISSING' | 'INVALID';
+  ledgerStatus: 'VERIFIED' | 'MISSING' | 'MISMATCH' | 'NOT_REQUIRED';
   reviewStatus: 'CLOSED' | 'OPEN';
   settledDate: string;
   bankDate: string | null;
@@ -144,11 +144,13 @@ function displayBankStatus(settlement: SettlementDecision): SettlementCase['bank
   if (settlement.bankStatus === 'AI_VERIFIED_MATCH') return 'ASSISTED';
   if (settlement.bankStatus === 'AMOUNT_MISMATCH') return 'DISCREPANCY';
   if (settlement.bankStatus === 'AMBIGUOUS') return 'AMBIGUOUS';
+  if (settlement.bankStatus === 'INVALID') return 'INVALID';
   return 'MISSING';
 }
 
 function displayLedgerStatus(settlement: SettlementDecision): SettlementCase['ledgerStatus'] {
-  if (settlement.ledgerStatus === 'VERIFIED' || settlement.ledgerStatus === 'NOT_APPLICABLE') return 'VERIFIED';
+  if (settlement.ledgerStatus === 'NOT_APPLICABLE') return 'NOT_REQUIRED';
+  if (settlement.ledgerStatus === 'VERIFIED') return 'VERIFIED';
   if (settlement.ledgerStatus === 'AMOUNT_MISMATCH') return 'MISMATCH';
   return 'MISSING';
 }
@@ -186,9 +188,13 @@ function projectCase(
     const raw = asRecord(source?.raw);
     const term = termByRowId.get(rowId);
     const ledger = ledgerByReconId.get(rowId);
-    const merchant = ledger === undefined
+    const merchant = raw.type === 'adjustment' || raw.type === 'transfer'
+      ? 'NOT_REQUIRED'
+      : ledger === undefined
       ? 'MISSING'
-      : ledger.ledgerStatus === 'VERIFIED' || ledger.ledgerStatus === 'NOT_APPLICABLE'
+      : ledger.ledgerStatus === 'NOT_APPLICABLE'
+        ? 'NOT_REQUIRED'
+        : ledger.ledgerStatus === 'VERIFIED'
         ? 'VERIFIED'
         : ledger.ledgerStatus === 'AMOUNT_MISMATCH'
           ? 'MISMATCH'

@@ -127,7 +127,10 @@ export function checkMerchantLedger(
     let candidates = merchantByDirect.get(directReconKey(recon.value)) ?? [];
     if (candidates.length === 0 && recon.value.orderId !== null) {
       const orderKey = `${recon.value.type}\u0000${recon.value.orderId}`;
-      const merchantCandidates = merchantsByOrder.get(orderKey) ?? [];
+      // An order may supply missing identity; it cannot override a contradictory explicit identity.
+      const merchantCandidates = (merchantsByOrder.get(orderKey) ?? []).filter(
+        (candidate) => directMerchantKey(candidate.value) === null,
+      );
       const reconCandidates = reconByOrder.get(orderKey) ?? [];
       if (merchantCandidates.length === 1 && reconCandidates.length === 1) {
         candidates = merchantCandidates;
@@ -167,7 +170,12 @@ export function checkMerchantLedger(
       const candidate = candidates[0];
       if (candidate === undefined) throw new Error("ledger candidate invariant failed");
       matchedMerchantRows.add(candidate.rowId);
-      status = candidate.value.expectedAmount === recon.value.amount ? "VERIFIED" : "AMOUNT_MISMATCH";
+      const contradictsPayment = recon.value.type === "payment"
+        && candidate.value.paymentRef !== null && candidate.value.paymentRef !== recon.value.entityId
+        || recon.value.type === 'refund' && recon.value.paymentId !== null
+          && candidate.value.paymentRef !== null && candidate.value.paymentRef !== recon.value.paymentId;
+      status = contradictsPayment ? "AMBIGUOUS_REFERENCE"
+        : candidate.value.expectedAmount === recon.value.amount ? "VERIFIED" : "AMOUNT_MISMATCH";
       checksByMerchant.set(candidate.rowId, {
         row: candidate,
         reconRow: recon,
@@ -181,6 +189,13 @@ export function checkMerchantLedger(
           ownerId: recon.value.entityId,
           rowIds: [recon.rowId, candidate.rowId],
           message: `Merchant amount ${candidate.value.expectedAmount} does not equal Razorpay amount ${recon.value.amount}`,
+        });
+      }
+      if (status === "AMBIGUOUS_REFERENCE") {
+        issues.push({
+          code: "INSUFFICIENT_EVIDENCE", settlementId, ownerId: recon.value.entityId,
+          rowIds: [recon.rowId, candidate.rowId],
+          message: `Merchant record ${candidate.value.recordId} supplies conflicting payment identities`,
         });
       }
     }

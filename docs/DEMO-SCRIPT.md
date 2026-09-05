@@ -1,5 +1,9 @@
 # Five-minute demo script
 
+**September 5 submission update:** use [DEMO-SCRIPT-FINAL.md](DEMO-SCRIPT-FINAL.md), which includes
+the executable Proof Lab and source-change demonstration. The route below remains a recorded-only
+fallback; it does not demonstrate the new browser reconciliation workflow.
+
 The committed demo uses synthetic public inputs and pinned replay responses. Do not use a live model
 or network during judging. Search by the real artifact IDs below; the Evidence Desk renders all 24
 recorded settlement decisions rather than a hand-written showcase.

@@ -1,5 +1,89 @@
 @import 'tailwindcss';
 
+/* Proof Lab: the same paper-and-ink evidence system, now executable. */
+.workbench { padding: 30px clamp(18px, 3vw, 44px) 40px; }
+.workbench-intro { display: grid; grid-template-columns: 1.7fr 1fr; gap: 60px; align-items: end; margin-bottom: 34px; }
+.workbench-intro h1 { font: 54px/1.05 var(--display); letter-spacing: -2px; margin: 12px 0 18px; }
+.workbench-intro h1 em { color: var(--blue); font-weight: 400; }
+.workbench-intro p { max-width: 580px; line-height: 1.6; color: var(--muted); font-size: 15px; }
+.workbench-intro aside { border-left: 2px solid var(--blue); padding: 8px 0 8px 24px; }
+.workbench-intro aside > span { display: block; font: 10px var(--mono); color: var(--blue); margin-bottom: 14px; }
+.workbench-intro aside > b { font: 23px var(--display); }
+.workbench-intro button, .lab-result button { background: transparent; color: var(--blue); font: 11px var(--mono); padding: 10px 0; cursor: pointer; text-align: left; }
+.workbench-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-dark); background: var(--sheet); }
+.challenge-panel, .source-panel { min-width: 0; padding: 26px; }
+.challenge-panel { border-right: 1px solid var(--line); background: linear-gradient(140deg,rgba(36,67,194,.045),transparent 60%); }
+.workbench .section-head h2 { font: 26px/1.15 var(--display); margin: 7px 0; }
+.workbench .section-head { gap: 14px; }
+.source-panel > p { color: var(--muted); line-height: 1.6; font-size: 13px; }
+.challenge-start { padding: 20px 0 4px; }
+.lab-glyph { font: 72px var(--display); color: var(--blue); display: block; text-align: center; margin-bottom: 14px; }
+.lab-glyph i { font: 30px var(--display); display: inline-grid; place-items: center; width: 40px; height: 40px; background: var(--acid); border-radius: 50%; transform: rotate(-15deg); }
+.challenge-start p { margin: 12px 0 22px; color: var(--muted); line-height: 1.7; max-width: 430px; }
+.workbench .run-button { width: 100%; min-height: 52px; }
+.lab-select { display: block; margin: 12px 0 18px; font: 10px var(--mono); color: var(--muted); }
+.lab-select select { width: 100%; background: var(--sheet); color: var(--ink); border: 1px solid var(--line-dark); padding: 12px 8px; margin-top: 8px; font: 12px var(--mono); }
+.experiment-options { display: grid; gap: 6px; margin-bottom: 18px; }
+.experiment-options button { display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); padding: 12px; background: transparent; text-align: left; cursor: pointer; transition: background .15s; }
+.experiment-options button > span { color: var(--muted); font: 10px var(--mono); }
+.experiment-options button > div { flex: 1; }
+.experiment-options b, .experiment-options small { display: block; }
+.experiment-options b { font-size: 14px; font-weight: 600; }
+.experiment-options small { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.experiment-options button i { font-style: normal; color: var(--blue); }
+.experiment-options button.active { border-color: var(--blue); background: var(--blue-pale); }
+.lab-note { display: block; color: var(--muted); font-size: 11px; line-height: 1.7; margin-top: 12px; }
+.source-slot { display: flex; align-items: flex-start; gap: 12px; border-top: 1px solid var(--line); padding: 18px 0; }
+.source-slot > span { font: 10px var(--mono); color: var(--blue); padding-top: 4px; }
+.source-slot > div { flex: 1; min-width: 0; }
+.source-slot label { font-weight: 600; display: block; font-size: 14px; }
+.source-slot small { color: var(--muted); font: 10px var(--mono); display: block; margin: 5px 0 10px; }
+.source-slot input { font-size: 11px; width: 100%; }
+.source-slot input::file-selector-button { background: var(--canvas); padding: 7px; border: 1px solid var(--line); margin-right: 6px; cursor: pointer; }
+.source-slot > button { background: transparent; color: var(--blue); padding: 3px 0; font: 9px var(--mono); cursor: pointer; }
+.source-run { margin-top: 8px; }
+.workbench button:disabled { opacity: .5; cursor: not-allowed; }
+.lab-error { padding: 20px; background: var(--red-pale); border-left: 3px solid var(--red); margin-top: 20px; }
+.lab-error b { font: 11px var(--mono); color: var(--red); }
+.lab-error p { margin: 9px 0; }
+.lab-result { margin-top: 28px; border: 1px solid var(--line-dark); background: var(--sheet); padding: 26px; border-top: 4px solid var(--blue); }
+.result-restored { border-top-color: var(--green); }
+.result-comparison { margin: 20px 0; }
+.result-comparison > div { display: grid; grid-template-columns: .8fr 1fr 1fr; border-bottom: 1px solid var(--line); padding: 11px 0; gap: 14px; }
+.result-comparison > div:first-child { font: 10px var(--mono); color: var(--muted); }
+.result-comparison b { font: 12px var(--mono); overflow-wrap: anywhere; }
+.result-comparison .changed-value { color: var(--red); }
+.result-accounting { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 24px 0; }
+.result-accounting b { font: 25px var(--mono); }
+.result-accounting small { display: block; font: 9px/1.6 var(--mono); color: var(--muted); margin-top: 6px; }
+.result-identity { border-top: 1px solid var(--line); padding-top: 15px; display: flex; align-items: center; flex-wrap: wrap; gap: 20px; font: 10px var(--mono); }
+.result-identity span { color: var(--muted); }
+.result-identity button { margin-left: auto; }
+.lab-disclosure { font-size: 11px; line-height: 1.7; color: var(--muted); max-width: 800px; margin-top: 22px; }
+.all-exceptions { margin-top: 30px; border-top: 1px solid var(--line-dark); padding-top: 20px; }
+.all-exceptions > summary { font: 11px/1.7 var(--mono); cursor: pointer; }
+.all-exceptions article { padding: 20px 0; border-top: 1px solid var(--line); }
+.all-exceptions article > b { font: 12px var(--mono); display: block; margin-bottom: 8px; color: var(--red); }
+.all-exceptions code, .all-exceptions small { font-size: 10px; overflow-wrap: anywhere; }
+.all-exceptions p { font-size: 13px; line-height: 1.7; }
+.all-exceptions article details { margin-top: 10px; font-size: 11px; }
+.exception-source-id { display: block; padding-top: 6px; }
+.ledger-not_required { color: var(--muted) !important; background: transparent !important; }
+@media (max-width: 900px) {
+  .workbench-intro { grid-template-columns: 1fr; gap: 15px; }
+  .workbench-intro h1 { font-size: 44px; }
+  .workbench-grid { grid-template-columns: 1fr; }
+  .challenge-panel { border-right: 0; border-bottom: 1px solid var(--line); }
+  .result-accounting { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 500px) {
+  .workbench-intro h1 { font-size: 37px; }
+  .challenge-panel, .source-panel, .lab-result { padding: 17px; }
+  .workbench .section-head { align-items: flex-start; flex-direction: column; }
+  .result-comparison b { font-size: 10px; }
+  .source-slot { gap: 8px; }
+}
+
 :root {
   --canvas: #ece9df;
   --sheet: #fffdf7;

@@ -85,6 +85,13 @@ export function groupSettlements(
     const warnings: string[] = [];
     const rowIds = rows.map((row) => row.rowId);
 
+    for (const row of rows) {
+      if (row.value.onHold === true || row.value.settled === false) {
+        issues.push({ code: "INSUFFICIENT_EVIDENCE", ownerId: settlementId, rowIds: [row.rowId],
+          message: `${row.value.entityId} explicitly reports held or unsettled funds` });
+      }
+    }
+
     const distinctUtrs = new Map<string, string>();
     for (const row of rows) {
       const key = exactUtrKey(row.value.settlementUtr);

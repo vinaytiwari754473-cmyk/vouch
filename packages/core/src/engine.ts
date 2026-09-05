@@ -12,6 +12,7 @@ import { checkMerchantLedger, type LedgerIssue } from "./ledger";
 import { analyzeMatching } from "./matching";
 import { checkedSubtract, checkedSum, signedPaiseFromInteger } from "./money";
 import { sha256Hex } from "./sha256";
+import { rejectedEvidenceTaints } from "./rejected-evidence";
 import { deterministicUtrEvidence, exactUtrKey } from "./utr";
 import type {
   AiHypothesis,
@@ -485,7 +486,20 @@ export function runVouch(
     settlementDuplicates.active,
     config,
   );
-  const taintedSettlementIds = new Set<SettlementId>();
+  const rejectedTaints = rejectedEvidenceTaints(ingested, config);
+  const taintedSettlementIds = new Set<SettlementId>(rejectedTaints.settlements.keys());
+  for (const bank of bankDuplicates.active) {
+    const rejectedIds = rejectedTaints.banks.get(bank.value.bankEntryId);
+    if (rejectedIds === undefined) continue;
+    invalidRowIds.add(bank.rowId);
+    exceptions.add({
+      code: "INSUFFICIENT_EVIDENCE",
+      caseId: caseIdForBank(bank.value.bankEntryId),
+      evidenceRowIds: [bank.rowId, ...rejectedIds],
+      message: `Bank record ${bank.value.bankEntryId} has a rejected occurrence with the same identity`,
+      terminal: "INVALID_INPUT",
+    });
+  }
   for (const issue of reconDuplicates.issues.filter((item) => item.conflicting)) {
     const affectedRows = reconDuplicates.quarantined.filter((row) => issue.rowIds.includes(row.rowId));
     for (const row of affectedRows) taintedSettlementIds.add(row.value.settlementId);
@@ -499,8 +513,8 @@ export function runVouch(
     const issue: GroupIssue = {
       code: "INSUFFICIENT_EVIDENCE",
       ownerId: group.settlementId,
-      rowIds: group.rows.map((row) => row.rowId),
-      message: `Settlement ${group.settlementId} depends on a conflicting stable source record`,
+      rowIds: [...group.rows.map((row) => row.rowId), ...(rejectedTaints.settlements.get(group.settlementId) ?? [])],
+      message: `Settlement ${group.settlementId} depends on rejected or conflicting source evidence`,
     };
     return {
       ...group,
@@ -544,12 +558,12 @@ export function runVouch(
   for (const row of bankDuplicates.active) {
     bankWork.set(row.value.bankEntryId, {
       settlementId: null,
-      bankStatus: row.value.direction === "CREDIT" ? "UNKNOWN_CREDIT" : "OUT_OF_SCOPE",
+      bankStatus: rejectedTaints.banks.has(row.value.bankEntryId) ? "INVALID" : row.value.direction === "CREDIT" ? "UNKNOWN_CREDIT" : "OUT_OF_SCOPE",
     });
   }
 
   const validGroups = groups.filter((group) => group.valid);
-  const creditBanks = eligibleCreditBanks(bankDuplicates.active);
+  const creditBanks = eligibleCreditBanks(bankDuplicates.active.filter((row) => !rejectedTaints.banks.has(row.value.bankEntryId)));
   const groupsByUtr = new Map<string, SettlementGroup[]>();
   const banksByUtr = new Map<string, SourceRow<BankEntry>[]>();
   for (const group of validGroups) {

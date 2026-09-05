@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { canonicalJson, sha256Hex } from '@vouch/core';
+import { canonicalJson, sha256Hex, runVouch } from '@vouch/core';
 import { describe, expect, it } from 'vitest';
 import { SEALED_DEMO_ARTIFACT_ID, validateAndProjectArtifact } from './artifact-data';
 
@@ -12,11 +12,23 @@ function rehashArtifact<T extends { artifactId: string }>(artifact: T): T {
 }
 
 describe('artifact-driven Evidence Desk', () => {
+  it('ships the same hybrid artifact that the CLI reproduces', () => {
+    expect(sealedText.trim()).toBe(readFileSync(resolve('data/dev/output/run-artifact.json'), 'utf8').trim());
+  });
+  it.each(['evaluation.json', 'performance.json'])('ships current supporting evidence: %s', (filename) => {
+    expect(readFileSync(resolve('apps/web/public/data', filename), 'utf8').trim()).toBe(readFileSync(resolve('data/dev/output', filename), 'utf8').trim());
+  });
+  it('does not turn an out-of-scope merchant check into a green verification', () => {
+    const artifact = runVouch({ reconRows: [{ entity_id: 'adj1', type: 'adjustment', amount: 10000, credit: 10000, debit: 0, fee: 0, tax: 0, currency: 'INR', created_at: 1787616000, settled_at: 1787616000, settlement_id: 's1', settlement_utr: 'UTR00000000001' }], bankRows: [{ bank_row_ref: 'b1', posting_date: '2026-08-25', direction: 'CREDIT', amount: 10000, currency: 'INR', utr: 'UTR00000000001' }], merchantRows: [] });
+    const projected = validateAndProjectArtifact(canonicalJson(artifact));
+    expect(projected.cases[0]?.ledgerStatus).toBe('NOT_REQUIRED');
+    expect(projected.cases[0]?.rows[0]?.merchant).toBe('NOT_REQUIRED');
+  });
   it('projects every recorded settlement from the sealed artifact', () => {
     const projected = validateAndProjectArtifact(sealedText);
 
     expect(projected.artifact.artifactId).toBe(SEALED_DEMO_ARTIFACT_ID);
-    expect(projected.batch.artifactSha256).toBe('8542b4dbc303e34ea267f4be581091c8e4b4227182c3d367631695548de61931');
+    expect(projected.batch.artifactSha256).toBe('9834c1862098df34c25f5eaed7763b3d767e66c74c8efa95c1ec2d0a8a7d50ae');
     expect(projected.cases).toHaveLength(24);
     expect(projected.cases.filter((item) => item.status === 'PROVED' || item.status === 'ASSISTED')).toHaveLength(10);
     expect(projected.cases.filter((item) => item.reviewStatus === 'OPEN')).toHaveLength(14);

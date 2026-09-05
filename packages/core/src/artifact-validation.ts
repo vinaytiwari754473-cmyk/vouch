@@ -723,7 +723,13 @@ function validateReferences(artifact: RunArtifact, rows: ReadonlyMap<string, Evi
   uniqueBy(artifact.ledger, (item) => item.recordId, "$.ledger");
   uniqueBy(artifact.ledger, (item) => item.rowId, "$.ledger");
   const exceptions = uniqueBy(artifact.exceptions, (item) => item.exceptionId, "$.exceptions");
-  const hypotheses = uniqueBy(artifact.hypotheses, (item) => item.hypothesisId, "$.hypotheses");
+  // A proposal may receive one verdict per candidate. Proposal IDs are not verdict IDs.
+  const hypotheses = new Map<string, typeof artifact.hypotheses[number][]>();
+  for (const verdict of artifact.hypotheses) {
+    const group = hypotheses.get(verdict.hypothesisId) ?? [];
+    group.push(verdict);
+    hypotheses.set(verdict.hypothesisId, group);
+  }
   uniqueBy(artifact.auditEvents, (item) => item.auditId, "$.auditEvents");
 
   const checkExceptionIds = (ids: readonly string[], path: string): void => {
@@ -819,9 +825,13 @@ function validateReferences(artifact: RunArtifact, rows: ReadonlyMap<string, Evi
     if (!decision.candidateBankEntryIds.includes(edge.bankEntryId)) {
       fail(`${path}.bankEntryId`, "is absent from the settlement candidate list");
     }
-    edge.hypothesisIds.forEach((id, hypothesisIndex) =>
-      expectReference(hypotheses, id, `${path}.hypothesisIds[${hypothesisIndex}]`),
-    );
+    edge.hypothesisIds.forEach((id, hypothesisIndex) => {
+      const verdicts = expectReference(hypotheses, id, `${path}.hypothesisIds[${hypothesisIndex}]`);
+      if (!verdicts.some((verdict) => verdict.status === 'VERIFIED'
+        && verdict.subjectBankEntryId === edge.bankEntryId && verdict.candidateSettlementId === edge.settlementId)) {
+        fail(`${path}.hypothesisIds[${hypothesisIndex}]`, 'must reference a verified hypothesis for this bank and settlement');
+      }
+    });
     if (edge.hypothesisIds.length > 0 && !edge.evidence.includes("AI_HYPOTHESIS")) {
       fail(`${path}.evidence`, "must include AI_HYPOTHESIS when hypothesisIds are present");
     }
@@ -832,7 +842,7 @@ function validateReferences(artifact: RunArtifact, rows: ReadonlyMap<string, Evi
     "$.candidateEdges",
   );
 
-  const edgeCanonical = new Set(artifact.candidateEdges.map((edge) => canonicalJson(edge)));
+  const mergedEdges = new Map(artifact.candidateEdges.map((edge) => [`${edge.settlementId}\u0000${edge.bankEntryId}`, edge]));
   artifact.hypotheses.forEach((verdict, index) => {
     const path = `$.hypotheses[${index}]`;
     if (verdict.subjectBankEntryId !== null) {
@@ -851,8 +861,10 @@ function validateReferences(artifact: RunArtifact, rows: ReadonlyMap<string, Evi
       if (!verdict.addedEdge.hypothesisIds.includes(verdict.hypothesisId)) {
         fail(`${path}.addedEdge.hypothesisIds`, "must include this hypothesisId");
       }
-      if (!edgeCanonical.has(canonicalJson(verdict.addedEdge))) {
-        fail(`${path}.addedEdge`, "must appear in candidateEdges");
+      const merged = mergedEdges.get(`${verdict.addedEdge.settlementId}\u0000${verdict.addedEdge.bankEntryId}`);
+      if (merged === undefined || verdict.addedEdge.evidence.some((item) => !merged.evidence.includes(item))
+        || verdict.addedEdge.hypothesisIds.some((item) => !merged.hypothesisIds.includes(item))) {
+        fail(`${path}.addedEdge`, "must be represented by the merged candidate edge");
       }
     }
   });

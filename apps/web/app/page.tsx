@@ -1,6 +1,8 @@
 'use client';
 
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
+import type { RunArtifact } from '@vouch/core';
+import { Workbench } from './workbench';
 import {
   type ArtifactProjection,
   evaluationRows,
@@ -10,7 +12,7 @@ import {
   type SettlementCase,
 } from './artifact-data';
 
-type View = 'evidence' | 'exceptions' | 'evaluation';
+type View = 'workbench' | 'evidence' | 'exceptions' | 'evaluation';
 type CaseFilter = 'ALL' | 'PROVED' | 'OPEN';
 
 const statusOrder: Record<CaseStatus, number> = {
@@ -82,7 +84,7 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
       </div>
 
       <div className="witness-row" aria-label="Three-source verification state">
-        <MiniWitness index="01" label="MERCHANT BOOKS" value={`${selected.rows.filter((row) => row.merchant === 'VERIFIED').length}/${selected.rows.length} records agree`} state={selected.ledgerStatus === 'VERIFIED' ? 'ok' : 'hold'} />
+        <MiniWitness index="01" label="MERCHANT BOOKS" value={selected.ledgerStatus === 'NOT_REQUIRED' ? 'Not required for these row types' : `${selected.rows.filter((row) => row.merchant === 'VERIFIED').length}/${selected.rows.filter((row) => row.merchant !== 'NOT_REQUIRED').length} required records agree`} state={selected.ledgerStatus === 'VERIFIED' ? 'ok' : 'hold'} />
         <MiniWitness index="02" label="RAZORPAY RECON" value={`${selected.rows.length} ledger effects`} state="ok" />
         <MiniWitness index="03" label="BANK STATEMENT" value={selected.bankReference ?? 'No proved counterpart'} state={selected.bankStatus === 'EXACT' ? 'ok' : selected.bankStatus === 'ASSISTED' ? 'ai' : 'hold'} />
       </div>
@@ -152,7 +154,7 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
 
           {allProved ? (
             <div className={`seal ${selected.status === 'ASSISTED' ? 'seal-assisted' : ''}`}>
-              <small>{selected.status === 'ASSISTED' ? 'VERIFIED AFTER AI PROPOSAL' : 'THREE WITNESSES AGREE'}</small><b>PROVED</b><span>VOUCH / ZERO PAISE</span>
+              <small>{selected.ledgerStatus === 'NOT_REQUIRED' ? 'BANK PROVED · BOOKS NOT REQUIRED' : selected.status === 'ASSISTED' ? 'VERIFIED AFTER AI PROPOSAL' : 'THREE WITNESSES AGREE'}</small><b>PROVED</b><span>VOUCH / ZERO PAISE</span>
             </div>
           ) : (
             <div className="exception-ticket"><span>{selected.exceptionCodes.join(' · ') || 'REVIEW REQUIRED'}</span><p>{selected.exceptionCopy ?? 'The artifact leaves this case open without claiming a proof.'}</p><b>NEXT / {selected.suggestedAction ?? 'MANUAL REVIEW'}</b></div>
@@ -177,7 +179,8 @@ function EvidenceView({ selected }: { selected: SettlementCase }) {
   );
 }
 
-function ExceptionsView({ cases, exceptionRecords, onSelect }: { cases: SettlementCase[]; exceptionRecords: number; onSelect: (item: SettlementCase) => void }) {
+function ExceptionsView({ cases, artifact, onSelect }: { cases: SettlementCase[]; artifact: RunArtifact; onSelect: (item: SettlementCase) => void }) {
+  const exceptionRecords = artifact.exceptions.length;
   const exceptions = cases.filter((item) => item.status !== 'PROVED' && item.status !== 'ASSISTED');
   const cashExposure = exceptions.reduce((sum, item) => item.actualPaise === null ? sum + item.expectedPaise : sum + Math.abs(item.actualPaise - item.expectedPaise), 0);
   return (
@@ -203,6 +206,7 @@ function ExceptionsView({ cases, exceptionRecords, onSelect }: { cases: Settleme
         <article><span>02</span><h2>Ambiguity is a result</h2><p>If more than one maximum assignment survives, Vouch refuses to pick the convenient one.</p></article>
         <article><span>03</span><h2>Three statuses, no greenwash</h2><p>Bank, merchant ledger and review states remain separate. Exact cash is not enough when the books disagree.</p></article>
       </div>
+      <details className="all-exceptions"><summary>ALL {exceptionRecords} EXCEPTION RECORDS · INCLUDING INVALID AND ORPHAN SOURCE ROWS</summary><p>Settlement cases above are only one view. This register also includes exceptions that have no settlement case.</p>{artifact.exceptions.map((item) => <article key={item.exceptionId}><b>{item.code}</b><code>{item.caseId}</code><p>{item.message}</p><small>NEXT / {item.suggestedAction} · {item.evidenceRowIds.length} evidence rows</small><details><summary>Source row identifiers</summary>{item.evidenceRowIds.map((id) => <code className="exception-source-id" key={id}>{id}</code>)}</details></article>)}</details>
     </section>
   );
 }
@@ -227,14 +231,14 @@ function EvaluationView() {
         <article><span>01 / FROZEN</span><h2>Truth stays outside the solver</h2><p>Core cannot import the generator, evaluator or truth directory. Input and truth hashes are recorded separately.</p></article>
         <article><span>02 / EXACT</span><h2>Ratios keep their denominators</h2><p>Results are stored as k/n, not rounded marketing percentages. A zero denominator is N/A, never zero.</p></article>
         <article><span>03 / HONEST</span><h2>Synthetic is not prevalence</h2><p>Category scores test behavior under planted faults. They do not claim to represent real merchant frequency.</p></article>
-        <article><span>04 / MEASURED LOCALLY</span><h2>3,013 rows / second</h2><p>30 sealed runs after 5 warmups: p50 359.49 ms, p95 462.56 ms. Timing stays outside the byte-stable decision artifact.</p></article>
+        <article><span>04 / MEASURED LOCALLY</span><h2>15,128 rows / second</h2><p>30 sealed runs after 5 warmups: p50 71.59 ms, p95 85.81 ms. Machine-specific core timing, not end-to-end upload or live-model latency.</p></article>
       </div>
     </section>
   );
 }
 
 export default function Home() {
-  const [view, setView] = useState<View>('evidence');
+  const [view, setView] = useState<View>('workbench');
   const [projection, setProjection] = useState<ArtifactProjection | null>(null);
   const [selectedId, setSelectedId] = useState('');
   const [filter, setFilter] = useState<CaseFilter>('ALL');
@@ -244,12 +248,14 @@ export default function Home() {
   const [notice, setNotice] = useState('LOADING SEALED ARTIFACT');
   const [loadError, setLoadError] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const originalDemo = useRef<RunArtifact | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void fetchSealedProjection()
       .then((next) => {
         if (cancelled) return;
+        originalDemo.current = next.artifact;
         setProjection(next);
         setSelectedId(next.cases[0]?.id ?? '');
         setNotice(`INTERNALLY CONSISTENT · ${next.batch.runId}`);
@@ -269,7 +275,7 @@ export default function Home() {
     const lowered = query.trim().toLowerCase();
     return [...cases]
       .filter((item) => filter === 'ALL' || (filter === 'PROVED' ? ['PROVED', 'ASSISTED'].includes(item.status) : !['PROVED', 'ASSISTED'].includes(item.status)))
-      .filter((item) => !lowered || `${item.id} ${item.utr ?? ''} ${item.exceptionCodes.join(' ')}`.toLowerCase().includes(lowered))
+      .filter((item) => !lowered || `${item.id} ${item.shortId} ${item.utr ?? ''} ${item.exceptionCodes.join(' ')}`.toLowerCase().includes(lowered))
       .sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
   }, [cases, filter, query]);
 
@@ -374,6 +380,7 @@ export default function Home() {
       <header className="masthead">
         <button className="wordmark" onClick={() => setView('evidence')} type="button" aria-label="Open Vouch evidence desk"><span>VOUCH</span><sup>01</sup></button>
         <nav className="primary-nav" aria-label="Product views">
+          <button className={view === 'workbench' ? 'active' : ''} aria-current={view === 'workbench' ? 'page' : undefined} onClick={() => setView('workbench')} type="button">Proof Lab</button>
           <button className={view === 'evidence' ? 'active' : ''} aria-current={view === 'evidence' ? 'page' : undefined} onClick={() => setView('evidence')} type="button">Evidence desk</button>
           <button className={view === 'exceptions' ? 'active' : ''} aria-current={view === 'exceptions' ? 'page' : undefined} onClick={() => setView('exceptions')} type="button">Review <b>{batch.reviewCases}</b></button>
           {projection.isSealedDemo ? <button className={view === 'evaluation' ? 'active' : ''} aria-current={view === 'evaluation' ? 'page' : undefined} onClick={() => setView('evaluation')} type="button">Evaluation</button> : null}
@@ -409,6 +416,8 @@ export default function Home() {
         </div>
       ) : null}
 
+      <div hidden={view !== 'workbench'}><Workbench demo={originalDemo.current ?? projection.artifact} onResult={(next, caseId) => { setProjection(next); setSelectedId(caseId ?? next.cases[0]?.id ?? ''); setQuery(''); setFilter('ALL'); setNotice(`INTERNALLY CONSISTENT · FRESH SOURCE RUN · ${next.batch.inputRows} ROWS`); }} onInspect={() => setView('evidence')} onRecorded={() => { void retryLoad().then(() => setView('evidence')); }} /></div>
+
       {view === 'evidence' ? (
         <div className="desk-layout">
           <aside className="case-index">
@@ -419,7 +428,7 @@ export default function Home() {
               {filteredCases.map((item) => (
                 <button className={`case-card ${item.id === selected?.id ? 'selected' : ''}`} onClick={() => setSelectedId(item.id)} type="button" key={item.id}>
                   <span className="case-number">/{item.shortId}</span><StatusMark status={item.status} /><b>{formatPaise(item.expectedPaise)}</b><code>{item.id}</code>
-                  <small>{item.exceptionCode ?? (item.status === 'ASSISTED' ? 'AI EDGE · CODE VERIFIED' : 'THREE SOURCES AGREE')}</small>
+                  <small>{item.exceptionCode ?? (item.ledgerStatus === 'NOT_REQUIRED' ? 'BANK PROVED · BOOKS NOT REQUIRED' : item.status === 'ASSISTED' ? 'AI EDGE · CODE VERIFIED' : 'THREE SOURCES AGREE')}</small>
                 </button>
               ))}
             </div>
@@ -430,7 +439,7 @@ export default function Home() {
           </aside>
           {selected === undefined ? <section className="case-sheet empty-artifact"><p className="kicker">EMPTY ARTIFACT</p><h1>No settlement decisions were recorded.</h1></section> : <EvidenceView key={selected.id} selected={selected} />}
         </div>
-      ) : view === 'exceptions' ? <ExceptionsView cases={cases} exceptionRecords={batch.exceptionRecords} onSelect={openCase} /> : projection.isSealedDemo ? <EvaluationView /> : null}
+      ) : view === 'exceptions' ? <ExceptionsView cases={cases} artifact={projection.artifact} onSelect={openCase} /> : view === 'evaluation' && projection.isSealedDemo ? <EvaluationView /> : null}
 
       <footer className="principle-bar"><span>AI PROPOSES.</span><span>THE VERIFIER PROVES.</span><span>EVERY PAISE IS EXPLAINED—OR HONESTLY ESCALATED.</span></footer>
     </main>
