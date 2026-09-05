@@ -96,3 +96,5 @@ export type {
 } from "./types";
 export { agentDigest, assertAgentScope, verifyAgentSession } from './agent-session';
 export type { AgentSession, AgentStage } from './agent-session';
+export { AI_HYPOTHESIS_BATCH_SCHEMA, buildInvestigationPacket, createCaptureRequest, modelProviderForAdapter } from './investigation';
+export type { CaptureRequestDocument, InvestigationPacket } from './investigation';

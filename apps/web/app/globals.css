@@ -11,6 +11,10 @@
 .agent-room code { overflow-wrap: anywhere; }
 .agent-launch { padding: 22px; border: 1px solid var(--line-dark); background: var(--sheet); box-shadow: 6px 6px 0 var(--blue-pale); }
 .agent-mode { display: block; font: 14px var(--mono); color: var(--blue); margin-bottom: 14px; }
+.agent-access { display: block; margin: 14px 0; font-size: 14px; }
+.agent-access input { display: block; width: 100%; min-height: 44px; border: 1px solid var(--line-dark); padding: 10px; background: var(--canvas); color: var(--ink); margin-top: 7px; font-size: 16px; }
+.agent-launch .agent-replay { margin-top: 14px; }
+.local-companion { border-top: 1px solid var(--line); margin-top: 18px; padding-top: 14px; }
 .agent-launch .run-button { width: 100%; min-height: 52px; margin: 0; }
 .agent-launch p { font-size: 14px; margin: 12px 0; }
 .agent-launch small { display: block; margin-top: 12px; color: var(--muted); }

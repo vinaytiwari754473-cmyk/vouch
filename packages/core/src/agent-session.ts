@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { canonicalJson } from './canonical';
 import { runVouch } from './engine';
 import { sha256Hex } from './sha256';
+import { buildInvestigationPacket } from './investigation';
 import type { RunArtifact, RunInput } from './types';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
@@ -21,7 +22,7 @@ const sessionSchema = z.object({
   responseSha256: digest,
   rawResponseSha256: digest,
   provenance: z.object({
-    adapter: z.literal('codex-cli'),
+    adapter: z.enum(['codex-cli', 'gemini']),
     requestedModel: z.string().min(1).max(128),
     reportedModel: z.string().max(128).nullable(),
     responseId: z.string().max(256).nullable(),
@@ -49,6 +50,7 @@ export function assertAgentScope(baseline: RunArtifact, hypotheses: readonly unk
   const banks = new Map(baseline.bankEntries.filter(row => row.bankStatus === 'UNKNOWN_CREDIT').map(row => [String(row.bankEntryId), String(row.rowId)]));
   const settlements = new Set(baseline.settlements.filter(row => row.bankStatus === 'MISSING').map(row => String(row.settlementId)));
   const ids = new Set<string>();
+  const packet = buildInvestigationPacket(baseline);
   for (const raw of hypotheses) {
     const proposal = z.object({
       hypothesis_id: z.string(), subject_bank_entry_id: z.string(),
@@ -64,6 +66,11 @@ export function assertAgentScope(baseline: RunArtifact, hypotheses: readonly unk
       if (!proposal.requested_tests.includes(test)) throw new Error('Agent omitted a required verification test');
     }
     ids.add(proposal.hypothesis_id);
+    const evidence = (packet.unresolved_bank_evidence as { bank_entry_id: string; exact_span_options: unknown[] }[]).find(row => row.bank_entry_id === proposal.subject_bank_entry_id);
+    for (const rawSpan of proposal.literal_spans) {
+      const span = z.object({ field: z.enum(['narration', 'utr']), start: z.number().int().nonnegative(), end: z.number().int().nonnegative(), text: z.string().max(512) }).parse(rawSpan);
+      if (!evidence?.exact_span_options.some(option => agentDigest(option) === agentDigest(span))) throw new Error('Agent cited a span not present in its investigation packet');
+    }
   }
 }
 

@@ -23,7 +23,11 @@ incomplete ledger as fully proved.
 | Truth leaks into solver | package boundary and static import test | test failure |
 | Row order changes outcome | canonical occurrence identity and stable sorts | determinism test failure |
 | CSV formula injection | prefix dangerous exported cells with apostrophe | safe export |
-| Live model/network outage | committed replay default; miss remains unresolved | one case escalated |
+| Live model/network outage or malformed response | bounded timeout and strict response verification | no new AI result; replay must be selected explicitly |
+| API key exposed to visitors | server-only runtime secret, header to fixed Google endpoint | no key in bundles, traces, URLs or Git |
+| Public visitors exhaust inference allowance | separate high-entropy demo code, exact origin, atomic durable 50-attempt allowance | unauthenticated or over-limit request rejected before model call |
+| Concurrent model requests across server isolates | conditional D1 reservation with cooldown and expiring lease | busy request rejected; missing protection fails closed |
+| Browser sends private data or arbitrary prompts to model | endpoint accepts only an empty request and uses bundled public sample | non-empty/custom input rejected |
 | Tampered imported artifact | recompute source/input/audit/artifact hashes, references, equations and summary | import rejected; current desk retained |
 | Capture provenance altered | canonical hashes bind request, raw response, parsed hypotheses and verifier verdicts | capture/replay review fails |
 | Self-hash mistaken for authorship | UI says internally consistent, never authenticated or signed | no identity claim |
@@ -33,3 +37,10 @@ incomplete ledger as fully proved.
 Vouch does not move money, initiate refunds, mutate Razorpay records, make accounting entries,
 predict real-world settlement policy, or assert fraud. A manual decision is an auditable human action,
 not retroactive proof that the system was certain.
+
+The demo access code is a shared bearer capability, not named-user authentication: anyone it is
+shared with can consume the remaining allowance. It is kept only in browser memory; rotating the
+server secret revokes the old code. Provider quotas and billing controls remain separate. The total
+50-attempt allowance is durable across deploys, does not reset daily, and counts failed/uncertain
+attempts conservatively. It limits requests, not a guaranteed currency amount. Source-data upload
+verification stays AI-off and separate from this endpoint.

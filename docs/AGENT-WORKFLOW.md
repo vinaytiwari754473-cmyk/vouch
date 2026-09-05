@@ -7,7 +7,7 @@ accountant. It closes a reconciliation **run**, not every exception or the merch
    or extra settlement entities. Run deterministic Vouch: 1,083 rows, 24 settlements, 9 proved.
 2. Select the unresolved investigation scope: 3 bank entries and 4 candidate settlements in the
    current sample. Supply public evidence, allowed literal spans and a structured response schema.
-3. Invoke the existing Codex CLI adapter once, requesting `gpt-5.6-sol`. The model proposes only;
+3. Invoke Gemini once on the hosted server, or the optional local Codex CLI adapter. The model proposes only;
    at most 12 proposals can enter verification. Empty output is a valid abstention.
 4. Reject invented scope, duplicate proposal IDs, unoffered spans, omitted required tests or
    oversized output. Run core checks and global matching. A verified candidate is not automatically
@@ -15,7 +15,51 @@ accountant. It closes a reconciliation **run**, not every exception or the merch
 5. Return the final artifact, every exception and an exportable provenance/event trace. The browser
    independently recomputes the result from source rows and proposals before displaying it.
 
-## Local live mode
+## Hosted Gemini live mode
+
+On **Agent run**, enter the builder-provided **demo access code**, then choose **Run live Gemini
+agent**. This is a fresh API call, not the Codex recording. The UI shows hosted availability and
+remaining attempts. Live results may differ from replay; all returned proposals undergo the same
+scope checks, exact literal-citation verification and independent browser recomputation.
+
+The selected model is `gemini-3.5-flash` with low thinking effort. The exact credential-free wire
+request is included in the session alongside the strict verification schema. The provider schema
+omits string/array length bounds to keep its generation grammar tractable; Vouch still enforces
+proposal, span, byte and schema limits independently. The transport uses the REST
+`responseFormat.text.mimeType: APPLICATION_JSON` enum, not the SDK's MIME-string shorthand.
+
+September 5 integration smoke test: the provider reported `gemini-3.5-flash`, returned two proposals
+in 10,630 ms and reported 3,633 total tokens. Independent verification proved 10/24 settlements,
+retained 25 exception records and accounted for all 1,083 rows at zero accepted residual. Cost was
+not reported. This was a development integration check, not an evaluation or guaranteed future
+response. Earlier provider-compatibility checks failed closed; they produced no accepted AI result.
+
+Server requirements: `GEMINI_API_KEY` and `VOUCH_AGENT_ACCESS_CODE` configured as secret runtime
+environment variables, and the logical D1 binding `DB` with the generated `drizzle/` migrations.
+Keep both secrets out of Git, browser bundles and URLs. `.env.local` at the repository root is an
+ignored private credential handoff, not an automatic production configuration. Configure the
+server secrets through the hosting service and deploy to apply them. Never use a `NEXT_PUBLIC_`
+prefix. Give judges only the separate access code, through their private access instructions.
+
+Only a same-origin JSON POST with body `{}` and the access-code header is accepted. No request can
+supply source files, prompts, model settings or URLs. The model receives only the bounded packet
+derived from the pinned, bundled public synthetic sample. The API key is sent only in a header to
+Google's fixed GenerateContent endpoint. Uploaded merchant-file reconciliation remains AI-off.
+
+Limits are global across visitors and server instances: **50 total attempts**, one active request,
+a 30-second cooldown, a 60-second provider timeout and 4,096 output tokens. A conditional D1 write
+reserves an attempt before invoking the model. Failed and uncertain attempts count; there are no
+automatic retries or refunds. The 90-second lease lets a crashed run expire. If the database is
+unavailable, no model call is made. These limits do not reset daily or on redeploy, and do not
+guarantee a fixed monetary cost. Google quotas and billing controls still apply independently.
+
+The access code is a shared bearer capability, not named-user authentication. Keep it private;
+anyone who has it can consume the remaining allowance. It lives only in browser memory and is
+not saved to local storage. Rotate its server secret to revoke the old code. D1 stores only the
+attempt counter, cooldown and lease: no keys, source records or model responses. The fresh session
+is returned to the caller and may be exported; it does not overwrite the reviewed recording.
+
+## Optional local Codex live mode
 
 ```bash
 codex login
@@ -24,7 +68,8 @@ pnpm dev
 pnpm agent
 ```
 
-Open `http://localhost:3000`, select Agent run, then Run live agent. The companion listens only on
+Open `http://localhost:3000`, select Agent run, expand Local Codex companion, then Run local Codex
+agent. The companion listens only on
 `127.0.0.1:4318`. Exact Host and approved localhost Origin checks, an explicit custom-header JSON
 POST with body `{}`, single-flight execution, a 30-second cooldown and three attempts per process
 limit access. No request may supply files, paths, prompts, provider settings or command arguments.
@@ -45,10 +90,11 @@ Live runs use Codex allowance; no extra paid API provider is enabled by this wor
 
 ## Public replay and evidence
 
-The public site has no live provider endpoint. It replays the reviewed original proposals in
+Without a demo access code, the public site can still replay the reviewed original proposals in
 `apps/web/public/data/agent-session.json`, anchored by the reviewed hash in `agent-recording.ts`.
 Source/configuration binding and self-hash validation precede independent verification. Replay
-uses `aiMode: replay`; local fresh responses use `aiMode: live`. Both rerun the same engine.
+uses `aiMode: replay`; hosted Gemini and local Codex fresh responses use `aiMode: live`. All modes
+rerun the same engine. No failed live call silently falls back to the recording.
 
 The September 5 recording returned 2 proposals: 1 candidate verified and 1 rejected for posting
 outside the configured window; the final result was 9 exact + 1 assisted matches of 24 settlements,
@@ -63,7 +109,7 @@ the reviewed public recording. A session hash checks content integrity, not prov
 
 ## Recording
 
-Run the local live workflow once before recording to check login/access; do not keep retrying to
+Run the selected live workflow once before recording to check access; do not keep retrying to
 manufacture a preferred model result. For a reliable take, use the published recorded-agent mode
 and explicitly say it is a recording with fresh verification. For a live take, show the actual live
 button and call, and narrate whatever the model really returns. Cuts through waiting time must be

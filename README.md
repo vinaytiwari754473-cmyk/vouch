@@ -46,18 +46,26 @@ Open **Agent run** on the public product. **Replay recorded agent + reverify** l
 proposals from a real integrated Codex call on September 5, then independently reruns the core on
 the raw synthetic sources. It is explicitly replay, not a live hosted model call.
 
-For a live run, start `pnpm dev` and, in a second terminal, `pnpm agent`, with Codex CLI installed
-and signed in using `codex login`. Open `http://localhost:3000` and choose **Run live agent**.
+For a fresh hosted run, enter the builder-provided **demo access code** (never an API key), then
+choose **Run live Gemini agent**. The server calls Gemini with the pinned public synthetic evidence;
+the browser independently verifies the returned proposals. Availability is shown on the page.
 One click reconciles the batch, selects unresolved evidence, calls the model once, verifies its
 literal citations and required checks, rematches globally, and produces proof and exception exports.
 The recorded run returned two proposals: one accepted and one rejected, moving from 9/24 to 10/24
 proved settlements (41.7% coverage), with all 1,083 rows accounted for and 25 exception records.
 The model call took 20.3 seconds; this is separate from core throughput. Live output may differ.
 
-The loopback-only companion uses your Codex allowance and accepts only the pinned public synthetic
-sample. It accepts no browser-supplied files, prompts, paths or model settings. It permits one active
-run, a 30-second cooldown and three calls per server session. Real uploaded merchant files remain
-in the separate AI-off browser workflow. The public site exposes no paid model endpoint.
+The hosted endpoint keeps its API key server-side and requires a separate demo access code. A
+durable, atomic allowance permits 50 total model attempts across all visitors, one active call and
+a 30-second cooldown. Each call has a 60-second timeout and 4,096-output-token limit. Failed attempts
+still count; replay is never silently substituted. This is a bounded demo, not unlimited inference
+or a monetary spending guarantee. No uploaded merchant files, custom prompts or model settings
+are accepted by the agent. Real uploaded files stay in the separate AI-off browser workflow.
+
+Optional local Codex mode remains available: run `pnpm dev` and `pnpm agent` in separate terminals,
+with Codex CLI signed in using `codex login`. Open localhost, expand **Local Codex companion**, and
+choose **Run local Codex agent**. This loopback-only path uses your Codex allowance, with three
+attempts per companion process; it is separate from the hosted Gemini allowance.
 See [agent architecture, safety limits and recording steps](docs/AGENT-WORKFLOW.md).
 
 ## Challenge the proof in your browser

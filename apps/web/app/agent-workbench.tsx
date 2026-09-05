@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { canonicalArtifactJson, stringifyCsv, type AgentSession, type AgentStage, type RunArtifact } from '@vouch/core';
 import { validateAndProjectArtifact, type ArtifactProjection } from './artifact-data';
+import { readHostedAgentStream } from './hosted-agent-client';
 
 const companion = 'http://127.0.0.1:4318';
 const stages: { id: AgentStage; title: string; detail: string }[] = [
@@ -32,6 +33,8 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
   const [local, setLocal] = useState(false);
   const [connected, setConnected] = useState(false);
   const [remaining, setRemaining] = useState(3);
+  const [hosted, setHosted] = useState<{ configured: boolean; callsRemaining: number; model: string }>({ configured: false, callsRemaining: 0, model: 'Gemini' });
+  const [accessCode, setAccessCode] = useState('');
   const [mode, setMode] = useState<'live' | 'replay'>('replay');
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState<AgentStage | null>(null);
@@ -50,8 +53,17 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
     cancelled.current = false;
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname) && window.location.port === '3000';
     setLocal(isLocal); if (isLocal) void connect();
+    void refreshHosted();
     return () => { cancelled.current = true; worker.current?.terminate(); };
   }, []);
+  async function refreshHosted() {
+    try {
+      const response = await fetch('/api/agent/config', { cache: 'no-store', signal: AbortSignal.timeout(5000) });
+      if (!response.ok) return;
+      const raw = await response.json() as { configured?: unknown; callsRemaining?: unknown; model?: unknown };
+      if (typeof raw.configured === 'boolean' && typeof raw.callsRemaining === 'number' && Number.isInteger(raw.callsRemaining) && raw.callsRemaining >= 0 && raw.callsRemaining <= 50 && typeof raw.model === 'string' && raw.model.length < 128) setHosted({ configured: raw.configured, callsRemaining: raw.callsRemaining, model: raw.model });
+    } catch { /* Unconfigured hosting never interferes with recorded replay. */ }
+  }
   async function connect() {
     try {
       const response = await fetch(`${companion}/status`, { signal: AbortSignal.timeout(2000), cache: 'no-store' });
@@ -72,7 +84,7 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
       instance.postMessage({ demo, session, mode: nextMode });
     });
   }
-  async function run(nextMode: 'live' | 'replay') {
+  async function run(nextMode: 'live' | 'replay', provider: 'gemini' | 'codex' = 'gemini') {
     if (running.current) return;
     running.current = true; setBusy(true); setMode(nextMode); setError(''); setResult(null); setStage('RECONCILE');
     try {
@@ -82,6 +94,10 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
         const response = await fetch('/data/agent-session.json', { cache: 'no-store', signal: AbortSignal.timeout(10000) });
         if (!response.ok) throw new Error('The recorded agent session is unavailable.');
         session = await response.json();
+      } else if (provider === 'gemini') {
+        setMessage('Starting a live Gemini investigation on the server. Only the fixed public synthetic evidence is sent.');
+        const response = await fetch('/api/agent/run', { method: 'POST', headers: { 'content-type': 'application/json', 'x-vouch-demo-code': accessCode.trim() }, body: '{}', signal: AbortSignal.timeout(85000) });
+        session = await readHostedAgentStream(response, (nextStage, detail) => { setStage(nextStage); setMessage(detail); });
       } else {
         setMessage('Starting a live investigation using the local Codex subscription.');
         const response = await fetch(`${companion}/run`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-vouch-action': 'investigate-synthetic-sample' }, body: '{}', signal: AbortSignal.timeout(5000) });
@@ -105,12 +121,19 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
       const next = await verify(session, nextMode); if (cancelled.current) return;
       setResult(next); setStage('REPORT'); setMessage('Run complete. Unresolved evidence remains in the exception report.');
     } catch (cause) { if (!cancelled.current) setError(cause instanceof Error ? cause.message : 'Agent run failed'); }
-    finally { running.current = false; if (!cancelled.current) setBusy(false); }
+    finally { running.current = false; if (!cancelled.current) { setBusy(false); void refreshHosted(); } }
   }
   const artifact = result?.artifact;
   const provenance = result?.session.provenance;
   return <section className="agent-room room-view" aria-labelledby="agent-heading">
-    <div className="agent-heading"><div><p className="kicker">THE INVESTIGATION DESK / SYNTHETIC BATCH</p><h1 id="agent-heading">An agent that knows<br /><em>when to stop.</em></h1><p>Reconcile 1,083 source records. Investigate unresolved evidence. Verify every proposal. Hand off everything that cannot be proved.</p></div><div className="agent-launch"><span className="agent-mode">{busy ? `${mode.toUpperCase()} IN PROGRESS` : result ? `${mode.toUpperCase()} RESULT` : 'CHOOSE A RUN'}</span>{local ? <><button className="run-button" disabled={busy || !connected || remaining === 0} onClick={() => void run('live')} type="button"><span>{busy && mode === 'live' ? 'LIVE INVESTIGATION…' : 'RUN LIVE AGENT'}</span><i>↗</i></button><p>{connected ? `Local companion connected · ${remaining} calls left. Uses your Codex allowance.` : <>Start <code>pnpm agent</code> in the repository, then <button className="agent-text-button" type="button" onClick={() => void connect()}>check connection</button>.</>}</p></> : <p>Live runs use a local, signed-in Codex companion. This public site does not expose a paid model endpoint.</p>}<button className="agent-replay" disabled={busy} onClick={() => void run('replay')} type="button">{busy && mode === 'replay' ? 'REVERIFYING RECORDED PROPOSALS…' : 'REPLAY RECORDED AGENT + REVERIFY ↗'}</button><small>Replay makes no model call. Both modes run the verifier. No source files are uploaded from this page.</small></div></div>
+    <div className="agent-heading"><div><p className="kicker">THE INVESTIGATION DESK / SYNTHETIC BATCH</p><h1 id="agent-heading">An agent that knows<br /><em>when to stop.</em></h1><p>Reconcile 1,083 source records. Investigate unresolved evidence. Verify every proposal. Hand off everything that cannot be proved.</p></div><div className="agent-launch"><span className="agent-mode">{busy ? `${mode.toUpperCase()} IN PROGRESS` : result ? `${mode.toUpperCase()} RESULT` : 'CHOOSE A RUN'}</span>
+      <label className="agent-access">Demo access code<input type="password" autoComplete="off" value={accessCode} onChange={event => setAccessCode(event.target.value)} maxLength={128} disabled={busy} placeholder="Access code, never an API key" /></label>
+      <button className="run-button" disabled={busy || !hosted.configured || hosted.callsRemaining === 0 || !accessCode.trim()} onClick={() => void run('live')} type="button"><span>{busy && mode === 'live' ? 'LIVE INVESTIGATION…' : 'RUN LIVE GEMINI AGENT'}</span><i>↗</i></button>
+      <p>{hosted.configured ? `${hosted.model} · ${hosted.callsRemaining}/50 demo calls remain. One active call; 30-second cooldown.` : 'Hosted Gemini is not configured or temporarily unavailable.'} <button type="button" className="agent-text-button" disabled={busy} onClick={() => void refreshHosted()}>Check availability</button></p>
+      <small>The API key stays on the server. Request a demo access code from the builder; replay below needs no code.</small>
+      <button className="agent-replay" disabled={busy} onClick={() => void run('replay')} type="button">{busy && mode === 'replay' ? 'REVERIFYING RECORDED PROPOSALS…' : 'REPLAY RECORDED AGENT + REVERIFY ↗'}</button><small>Replay makes no model call. Both modes run the verifier. No source files are uploaded from this page.</small>
+      {local ? <details className="local-companion"><summary>Local Codex companion</summary><p>{connected ? `Connected · ${remaining} local calls left.` : <>Start <code>pnpm agent</code>, then <button className="agent-text-button" onClick={() => void connect()} type="button">check connection</button>.</>}</p><button className="agent-replay" disabled={busy || !connected || remaining === 0} onClick={() => void run('live', 'codex')} type="button">RUN LOCAL CODEX AGENT ↗</button></details> : null}
+    </div></div>
     <div className="agent-flow" aria-label="Agent workflow">{stages.map((item, index) => <div key={item.id} className={stage === item.id ? 'current' : stage && stages.findIndex(row => row.id === stage) > index ? 'completed' : ''}><span>0{index + 1}</span><h2>{item.title}</h2><p>{item.detail}</p></div>)}</div>
     <div className="agent-status" aria-live="polite" aria-busy={busy}>{error ? <p role="alert"><b>NO AI RESULT ACCEPTED.</b> {error} The Evidence desk retains the previous result.</p> : <p>{message || 'The agent receives only a bounded packet of unresolved public synthetic evidence—not the merchant upload flow.'}</p>}</div>
     {result && artifact && provenance ? <>
@@ -123,7 +146,7 @@ export function AgentWorkbench({ demo, active, onResult, onInspect, onLab }: { d
       }) : <p>The model returned no proposals. The deterministic result stands; unresolved evidence remains for review.</p>}</div>
       <section className="agent-handoff"><div><p className="kicker">RECONCILIATION RUN CLOSED / EXCEPTIONS STILL OPEN</p><h2>Every unresolved item has a next action.</h2><p>No bank transfer, accounting write-back or manual approval is performed. Closing the run does not mean every settlement is resolved.</p></div><div className="agent-actions"><button type="button" onClick={() => { onResult(validateAndProjectArtifact(canonicalArtifactJson(artifact))); onInspect(); }}>INSPECT THIS RUN ↗</button><button type="button" onClick={() => download(`${artifact.artifactId}.json`, canonicalArtifactJson(artifact))}>EXPORT PROOF JSON ↓</button><button type="button" onClick={() => download(`agent-${result.session.sessionId}.json`, JSON.stringify(result.session, null, 2))}>EXPORT AGENT TRACE ↓</button><button type="button" onClick={() => download('vouch-agent-exceptions.csv', stringifyCsv(['exception_id', 'case_id', 'code', 'impact_paise', 'suggested_action', 'message'], artifact.exceptions.map(item => ({ exception_id: item.exceptionId, case_id: item.caseId, code: item.code, impact_paise: item.impactPaise === null ? '' : String(item.impactPaise), suggested_action: item.suggestedAction, message: item.message }))), 'text/csv;charset=utf-8')}>EXPORT EXCEPTIONS CSV ↓</button></div></section>
       <details className="agent-exceptions"><summary>All {artifact.exceptions.length} unresolved exception records</summary>{artifact.exceptions.map(item => <article key={item.exceptionId}><b>{item.code}</b><code>{item.caseId}</code><p>{item.message}</p><small>NEXT ACTION: {item.suggestedAction.replaceAll('_', ' ')}</small></article>)}</details>
-      <details className="agent-provenance"><summary>Run provenance & recorded orchestration events</summary><p>Requested model: {provenance.requestedModel}. Reported model: {provenance.reportedModel ?? 'not supplied by the provider'}. Adapter: {provenance.adapter}.</p><p>Original model latency: {(provenance.latencyMs / 1000).toFixed(1)} seconds. Tokens: {provenance.totalTokens ?? 'not reported'}. Cost: {provenance.reportedCostUsd === null ? 'not reported; not assumed zero' : `$${provenance.reportedCostUsd}`}. {mode === 'replay' ? 'These describe the recorded call, not this replay.' : ''}</p><p>Captured: {result.session.completedAt}. The CLI enforces a 120-second request timeout and response-size limits; its output-token target is not an enforced spending cap.</p><code>{result.session.sessionSha256}</code><ol>{result.session.events.map(event => <li key={event.stage}><b>{event.stage}</b> · {event.at}<p>{event.message}</p></li>)}</ol><p>This trace contains program events and evidence, not hidden model reasoning. Hashes detect content changes; they do not authenticate the provider or sources.</p></details>
+      <details className="agent-provenance"><summary>Run provenance & recorded orchestration events</summary><p>Requested model: {provenance.requestedModel}. Reported model: {provenance.reportedModel ?? 'not supplied by the provider'}. Adapter: {provenance.adapter}.</p><p>Original model latency: {(provenance.latencyMs / 1000).toFixed(1)} seconds. Tokens: {provenance.totalTokens ?? 'not reported'}. Cost: {provenance.reportedCostUsd === null ? 'not reported; not assumed zero' : `$${provenance.reportedCostUsd}`}. {mode === 'replay' ? 'These describe the recorded call, not this replay.' : ''}</p><p>Captured: {result.session.completedAt}. {provenance.adapter === 'gemini' ? 'Gemini calls have a 60-second timeout, a 4,096-output-token limit and a durable 50-call demo allowance. These are request limits, not a guaranteed monetary price.' : 'The CLI enforces a 120-second request timeout and response-size limits; its output-token target is not an enforced spending cap.'}</p><code>{result.session.sessionSha256}</code><ol>{result.session.events.map(event => <li key={event.stage}><b>{event.stage}</b> · {event.at}<p>{event.message}</p></li>)}</ol><p>This trace contains program events and evidence, not hidden model reasoning. Hashes detect content changes; they do not authenticate the provider or sources.</p></details>
     </> : null}
     <div className="agent-footnote"><p>Synthetic development evidence—not a held-out evaluation or recovered merchant money. AI does not set financial status.</p><button type="button" onClick={onLab}>NEXT: CHALLENGE A PROOF IN THE LAB ↗</button></div>
   </section>;

@@ -62,7 +62,20 @@ A client-side evidence desk and executable Proof Lab. Financial decisions still 
 or explicit synthetic source edits. It never patches decision statuses. Runs are deterministic/AI-off,
 limited to 5,000 total rows and 250 settlements, with a 15-second worker timeout. Original sample
 evidence is cloned, not mutated; changed sources never reuse a pinned AI response. Source files remain
-in browser memory and are not uploaded by this flow. There is no persistence or direct bank connection.
+in browser memory and are not uploaded by this flow. There is no financial-record persistence or
+direct bank connection.
+
+The separate Agent run flow can call Gemini through a same-origin server endpoint, gated by a
+server-secret demo access code. Its input is exclusively the bundled public synthetic sample.
+Investigation packet construction, schema and scope verification are shared pure core functions;
+the HTTP provider adapter and clocks live in the web server. The browser independently verifies
+each returned session before displaying its result. A D1 table stores only a global attempt count,
+cooldown and expiring single-flight lease; it stores no keys, evidence or model responses. Generated
+schema migrations are applied by the hosting pipeline, never as runtime DDL.
+
+Replay stays publicly available without credentials. The local Codex companion is an optional,
+loopback-only alternative. See [AGENT-WORKFLOW.md](AGENT-WORKFLOW.md) for the separate access and
+resource limits. Neither provider can authorize a financial verdict.
 
 Before displaying any result, the desk validates source hashes and row
 identities, input summaries, references, equations, audit hashes, the recalculated run summary and
